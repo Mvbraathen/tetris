@@ -3,8 +3,10 @@ import { render, screen } from '@testing-library/react';
 
 import App from './App';
 
-test('renders learn react link', () => {
-  render(<App />);
-  const linkElement = screen.getByText(/learn react/i);
-  expect(linkElement).toBeInTheDocument();
+describe('App should setup and render the game', () => {
+  it('Should contain the header named Tetris', () => {
+    render(<App />);
+    const tetrisHeader = screen.getByText(/Tetris/i);
+    expect(tetrisHeader).toBeInTheDocument();
+  });
 });
