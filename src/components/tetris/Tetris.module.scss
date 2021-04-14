@@ -1,0 +1,41 @@
+.Tetris {
+  position: relative;
+  width: 100%;
+  height: 40rem;
+  max-width: 32rem;
+  margin: 0 auto;
+  border: 0.3rem inset;
+  background-color: gray;
+  outline: red;
+
+  button {
+    width: 100%;
+    padding: 0.5rem 1.7rem;
+    border: greenyellow outset;
+    border-radius: 0.5rem;
+    background-color: green;
+    color: white;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  aside {
+    display: grid;
+    grid-template-rows: 3rem 3rem 3rem auto;
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 8rem;
+    padding: 0.5rem 0.2rem;
+    border: silver outset;
+    box-sizing: border-box;
+    color: white;
+
+    div {
+      align-self: end;
+    }
+  }
+}

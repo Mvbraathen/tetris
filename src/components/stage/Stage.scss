@@ -1,0 +1,54 @@
+.Row {
+  display: grid;
+  grid-template-columns: repeat(16, 1fr);
+}
+
+.Cell {
+  width: 2rem;
+  height: 2rem;
+  background: black;
+  color: white;
+  text-align: center;
+  line-height: 2rem;
+  border: 0.1rem inherit;
+  border-style: outset;
+  box-sizing: border-box;
+  transition: opacity 150ms ease-out;
+
+  &[data-color='0'] {
+    border-color: black;
+    border-style: outset;
+  }
+
+  &[data-color='1'] {
+    background: orange;
+    border-color: adjust-color(orange, $lightness: 20%);
+  }
+  &[data-color='2'] {
+    background: blue;
+    border-color: adjust-color(blue, $lightness: 20%);
+  }
+  &[data-color='3'] {
+    background: red;
+    border-color: adjust-color(red, $lightness: 20%);
+  }
+  &[data-color='4'] {
+    background: green;
+    border-color: adjust-color(green, $lightness: 20%);
+  }
+  &[data-color='5'] {
+    background: yellow;
+    border-color: adjust-color(yellow, $lightness: 20%);
+  }
+  &[data-color='6'] {
+    background: purple;
+    border-color: adjust-color(purple, $lightness: 20%);
+  }
+  &[data-color='7'] {
+    background: cyan;
+    border-color: adjust-color(cyan, $lightness: 20%);
+  }
+  &[data-color='255'] {
+    opacity: 0;
+  }
+}
