@@ -1,23 +1,30 @@
 .Row {
   display: grid;
   grid-template-columns: repeat(16, 1fr);
+
+  .Cell {
+    width: 2rem;
+    height: 2rem;
+    border: 0.1rem outset rgba(255, 255, 255, 0.2);
+    background: black;
+    line-height: 2rem;
+
+    &[data-color='0'] {
+      border: 0.1rem outset rgba(255, 255, 255, 0.2);
+    }
+  }
 }
 
 .Cell {
-  width: 2rem;
-  height: 2rem;
-  background: black;
+  background: transparent;
   color: white;
   text-align: center;
-  line-height: 2rem;
-  border: 0.1rem inherit;
-  border-style: outset;
   box-sizing: border-box;
   transition: opacity 150ms ease-out;
+  border: 0.1rem outset rgba(255, 255, 255, 0.2);
 
   &[data-color='0'] {
-    border-color: black;
-    border-style: outset;
+    border-style: none;
   }
 
   &[data-color='1'] {

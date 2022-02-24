@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 import { createStage, GameBoard, Row } from 'helpers/gameHelpers';
-import { Player } from './usePlayer';
+import { Player } from 'models';
 import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
 
 const initialStage = createStage();

@@ -23,7 +23,7 @@
 
   aside {
     display: grid;
-    grid-template-rows: 3rem 3rem 3rem auto;
+    grid-template-rows: 9rem 3rem 3rem 3rem auto;
     position: absolute;
     right: 0;
     top: 0;
@@ -34,8 +34,13 @@
     box-sizing: border-box;
     color: white;
 
-    div {
+    > div {
       align-self: end;
+
+      &:first-child {
+        align-self: start;
+        height: 8rem;
+      }
     }
   }
 }

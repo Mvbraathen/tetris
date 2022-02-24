@@ -1,0 +1,31 @@
+.Next {
+  border: #333 inset;
+  border-radius: 0.5rem;
+  border-bottom-color: #ccc;
+  border-right-color: #ccc;
+  padding: 1rem;
+  box-sizing: border-box;
+  background: #444;
+  text-align: center;
+
+  .tetromino {
+    display: grid;
+    width: 3rem;
+    margin: 1rem auto;
+    grid-template-rows: 1rem 1rem 1rem 1rem;
+
+    .row {
+      display: grid;
+      grid-template-columns: 1rem 1rem 1rem;
+    }
+
+    .cell {
+      background: black;
+      color: white;
+      text-align: center;
+      border: 0.1rem outset inherit;
+      box-sizing: border-box;
+      transition: opacity 150ms ease-out;
+    }
+  }
+}

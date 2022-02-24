@@ -1,5 +1,5 @@
 import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
-import { Player, Position } from 'hooks';
+import { Player, Position } from 'models';
 import { Tetromino } from './tetrominos';
 
 export interface Row {

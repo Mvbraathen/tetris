@@ -2,23 +2,33 @@ import React, { useEffect, useState } from 'react';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
+import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import { createStage, detectCollision } from 'helpers';
 import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 
 interface GameState {
   gameOver: boolean;
+  dropSpeed: number;
 }
 
 const initialGameState: GameState = {
-  gameOver: true
+  gameOver: true,
+  dropSpeed: 1100
 };
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
-  const [player, updatePlayerPosition, resetPlayer, rotatePlayer] = usePlayer();
+  const [
+    player,
+    updatePlayerPosition,
+    resetPlayer,
+    rotatePlayer,
+    applyTetromino
+  ] = usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
-  const [score, rows, level, resetGame] = useGameStatus(rowsCleared);
+  const [score, rows, level, tetrominos, resetGame, nextTetromino] =
+    useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
 
   const keyDownHandler = (event: any): void => {
@@ -36,6 +46,11 @@ export default function Tetris() {
         break;
 
       case 'ArrowUp':
+        rotatePlayer(stage, 1);
+        break;
+
+      case ' ':
+        console.log('SPACE');
         rotatePlayer(stage, 1);
         break;
     }
@@ -56,9 +71,14 @@ export default function Tetris() {
         });
         return;
       }
+      nextTetromino();
       resetPlayer();
     }
   }, [player.collided]);
+
+  useEffect(() => {
+    applyTetromino(tetrominos[0]);
+  }, [tetrominos]);
 
   useEffect(() => {
     setDropSpeed(900 / level + 200);
@@ -103,6 +123,7 @@ export default function Tetris() {
   };
 
   const play = (): void => {
+    nextTetromino();
     resetPlayer();
     resetGame();
     setStage(createStage());
@@ -122,9 +143,10 @@ export default function Tetris() {
     >
       <Stage stage={stage} />
       <aside>
+        <Next tetromino={tetrominos[1]} />
         <Display content={'Score: ' + score} />
         <Display content={'Rows: ' + rows} />
-        <Display content={'Level ' + level} />
+        <Display content={'Level: ' + level} />
         {state.gameOver && (
           <div>
             <button onClick={() => play()} tabIndex={-1}>

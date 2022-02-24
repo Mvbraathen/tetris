@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 import {
   detectCollision,
@@ -6,22 +6,13 @@ import {
   randomTetromino,
   Tetromino
 } from 'helpers';
+import { Player } from '../models/player';
 import { STAGE_WIDTH } from 'components/stage/Stage';
-
-export interface Position {
-  x: number;
-  y: number;
-}
-
-export interface Player {
-  position: Position;
-  tetromino: Tetromino;
-  collided: boolean;
-}
 
 const initialPlayerState: Player = {
   position: { x: STAGE_WIDTH / 2 - 2, y: -3 },
   tetromino: randomTetromino(),
+  nextTetromino: randomTetromino(),
   collided: false
 };
 
@@ -29,7 +20,8 @@ export const usePlayer = (): [
   Player,
   (x: number, y: number, collided: boolean) => void,
   any,
-  (stage: GameBoard, dir: number) => void
+  (stage: GameBoard, dir: number) => void,
+  (tetromino: Tetromino) => void
 ] => {
   const [player, setPlayer] = useState(initialPlayerState);
 
@@ -42,13 +34,11 @@ export const usePlayer = (): [
   };
 
   const resetPlayer = useCallback(() => {
-    const tetromino = randomTetromino();
     setPlayer({
       ...initialPlayerState,
-      tetromino,
       position: {
         x: STAGE_WIDTH / 2 - 2,
-        y: -1 * Math.max(2, tetromino.shape.length + 1)
+        y: -1 * Math.max(2, player.tetromino.shape.length + 1)
       }
     });
   }, []);
@@ -76,5 +66,18 @@ export const usePlayer = (): [
     setPlayer(clonedPlayer);
   };
 
-  return [player, updatePlayerPosition, resetPlayer, rotatePlayer];
+  const applyTetromino = (tetromino: Tetromino): void => {
+    setPlayer({
+      ...player,
+      tetromino
+    });
+  };
+
+  return [
+    player,
+    updatePlayerPosition,
+    resetPlayer,
+    rotatePlayer,
+    applyTetromino
+  ];
 };

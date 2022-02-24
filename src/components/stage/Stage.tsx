@@ -13,9 +13,9 @@ export default function Stage(props: { stage: GameBoard }) {
   return (
     <div className="stage">
       {stage.rows.map((row, index) => (
-        <div key={index} className="Row">
+        <div key={'r-' + index} className="Row">
           {row.cells.map((cell, index) => (
-            <Cell key={index} color={cell.color} />
+            <Cell key={'cl-' + index} color={cell.color} />
           ))}
         </div>
       ))}
