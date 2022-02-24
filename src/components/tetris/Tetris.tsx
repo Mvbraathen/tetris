@@ -6,6 +6,7 @@ import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import { createStage, detectCollision } from 'helpers';
 import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
+import GameOver from '../gameover/GameOver';
 
 interface GameState {
   gameOver: boolean;
@@ -16,6 +17,9 @@ const initialGameState: GameState = {
   gameOver: true,
   dropSpeed: 1100
 };
+
+const SPEED_FACTOR = 450;
+const LEVEL_FACTOR = 125;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -30,8 +34,16 @@ export default function Tetris() {
   const [score, rows, level, tetrominos, resetGame, nextTetromino] =
     useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
+  const [hasReleased, setHasReleased] = useState(true);
 
   const keyDownHandler = (event: any): void => {
+    if (state.gameOver) {
+      if (event.key === ' ' && hasReleased) {
+        play();
+      }
+      return;
+    }
+
     switch (event.key) {
       case 'ArrowLeft':
         movePlayer(-1);
@@ -50,9 +62,16 @@ export default function Tetris() {
         break;
 
       case ' ':
-        console.log('SPACE');
-        rotatePlayer(stage, 1);
+        setDropSpeed(30);
+        setHasReleased(false);
         break;
+    }
+  };
+
+  const keyUpHandler = (event: any): void => {
+    if (event.key === ' ') {
+      setDropSpeed(SPEED_FACTOR / level + LEVEL_FACTOR);
+      setHasReleased(true);
     }
   };
 
@@ -81,7 +100,8 @@ export default function Tetris() {
   }, [tetrominos]);
 
   useEffect(() => {
-    setDropSpeed(900 / level + 200);
+    setDropSpeed(SPEED_FACTOR / level + LEVEL_FACTOR);
+    console.log('SPEED', SPEED_FACTOR / level + LEVEL_FACTOR);
   }, [level]);
 
   const movePlayer = (dir: number): void => {
@@ -138,10 +158,12 @@ export default function Tetris() {
   return (
     <section
       className={css.Tetris}
-      onKeyDown={(event) => keyDownHandler(event)}
+      onKeyDown={keyDownHandler}
+      onKeyUp={keyUpHandler}
       tabIndex={0}
     >
       <Stage stage={stage} />
+      <GameOver gameOver={state.gameOver} />
       <aside>
         <Next tetromino={tetrominos[1]} />
         <Display content={'Score: ' + score} />

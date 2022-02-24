@@ -1,10 +1,10 @@
 .App {
-  font-family: 'ZCOOL QingKe HuangYou';
   .AppHeader {
     height: 5rem;
-    color: black;
+    color: var(--primary-color);
     text-align: center;
     line-height: 5rem;
     font-size: 4rem;
+    filter: drop-shadow(0 0 16px var(--primary-color));
   }
 }

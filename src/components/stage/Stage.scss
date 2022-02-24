@@ -5,8 +5,8 @@
   .Cell {
     width: 2rem;
     height: 2rem;
-    border: 0.1rem outset rgba(255, 255, 255, 0.2);
-    background: black;
+    border: 0.1rem outset rgba(255, 255, 255, 0.3);
+    background: var(--background-color);
     line-height: 2rem;
 
     &[data-color='0'] {
