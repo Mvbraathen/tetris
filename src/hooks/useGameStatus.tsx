@@ -1,13 +1,12 @@
 import { useEffect, useState } from 'react';
+
 import { randomTetromino, Tetromino } from '../helpers';
 
-interface TetrominosList {
-  tetrominos: Tetromino[];
-}
-
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
-
-const initialTetrominosList = [randomTetromino(), randomTetromino()];
+const initialTetrominosList: Tetromino[] = [
+  randomTetromino(),
+  randomTetromino()
+];
 
 export const useGameStatus = (
   rowsCleared: number

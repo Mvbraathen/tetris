@@ -1,14 +1,5 @@
-import React from 'react';
-
 import { createStage } from './gameHelpers';
 import { STAGE_HEIGHT, STAGE_WIDTH } from 'components/stage/Stage';
-import { usePlayer } from '../hooks';
-
-const MockComponent = () => {
-  const [player] = usePlayer();
-
-  return <div>TEST</div>;
-};
 
 describe('Gamehelpers', () => {
   it('Should create a stage with a 12 x 20 grid containing only empty cells', () => {

@@ -1,7 +1,6 @@
 import React, { ReactElement } from 'react';
 
 import css from './Next.module.scss';
-
 import Cell from 'components/cell/Cell';
 import { Tetromino } from '../../helpers';
 
