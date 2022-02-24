@@ -20,6 +20,7 @@ const initialGameState: GameState = {
 
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
+const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -35,6 +36,7 @@ export default function Tetris() {
     useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [hasReleased, setHasReleased] = useState(true);
+  const [gamesPlayed, increaseGamesPlayed] = useState(0);
 
   const keyDownHandler = (event: any): void => {
     if (state.gameOver) {
@@ -62,7 +64,7 @@ export default function Tetris() {
         break;
 
       case ' ':
-        setDropSpeed(30);
+        setDropSpeed(FAST_DROP_SPEED);
         setHasReleased(false);
         break;
     }
@@ -151,6 +153,7 @@ export default function Tetris() {
       ...state,
       gameOver: false
     });
+    increaseGamesPlayed(gamesPlayed + 1);
 
     document.querySelector('section')?.focus();
   };
@@ -163,7 +166,7 @@ export default function Tetris() {
       tabIndex={0}
     >
       <Stage stage={stage} />
-      <GameOver gameOver={state.gameOver} />
+      <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
       <aside>
         <Next tetromino={tetrominos[1]} />
         <Display content={'Score: ' + score} />
