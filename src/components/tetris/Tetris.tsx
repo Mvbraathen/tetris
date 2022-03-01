@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
 import Next from 'components/next/Next';
-import Stage, { STAGE_WIDTH } from 'components/stage/Stage';
+import Stage from 'components/stage/Stage';
 import { canMove, createStage, detectCollision } from 'helpers';
+import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 
 interface GameState {
   gameOver: boolean;
