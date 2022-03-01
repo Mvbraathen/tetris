@@ -3,6 +3,10 @@
   --primary-color: #2acff5;
 }
 
+* {
+  user-select: none;
+}
+
 body {
   margin: 0;
   background: #123;

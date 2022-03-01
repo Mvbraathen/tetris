@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
+import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
-import Next from 'components/next/Next';
-import Stage from 'components/stage/Stage';
-import { createStage, detectCollision } from 'helpers';
-import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 import GameOver from '../gameover/GameOver';
+import Next from 'components/next/Next';
+import Stage, { STAGE_WIDTH } from 'components/stage/Stage';
+import { canMove, createStage, detectCollision } from 'helpers';
 
 interface GameState {
   gameOver: boolean;
@@ -64,36 +64,40 @@ export default function Tetris() {
         break;
 
       case ' ':
-        setDropSpeed(FAST_DROP_SPEED);
-        setHasReleased(false);
+        dropPlayer();
         break;
     }
   };
 
+  const levelSpeed = (): number => {
+    return SPEED_FACTOR / level + LEVEL_FACTOR;
+  };
+
   const keyUpHandler = (event: any): void => {
-    if (event.key === ' ') {
-      setDropSpeed(SPEED_FACTOR / level + LEVEL_FACTOR);
+    if (event.key === ' ' || event.key === 'ArrowDown') {
+      setDropSpeed(levelSpeed);
       setHasReleased(true);
     }
   };
 
   useInterval(() => {
-    if (!state.gameOver) {
+    if (!state.gameOver || !player.collided) {
       drop();
     }
   }, dropSpeed);
 
   useEffect(() => {
     if (player.collided) {
-      if (player.position.y < 1) {
+      if (player.position.y < 0) {
         setState({
           ...state,
           gameOver: true
         });
         return;
+      } else {
+        resetPlayer();
+        nextTetromino();
       }
-      nextTetromino();
-      resetPlayer();
     }
   }, [player.collided]);
 
@@ -102,12 +106,20 @@ export default function Tetris() {
   }, [tetrominos]);
 
   useEffect(() => {
-    setDropSpeed(SPEED_FACTOR / level + LEVEL_FACTOR);
-    console.log('SPEED', SPEED_FACTOR / level + LEVEL_FACTOR);
+    setDropSpeed(levelSpeed);
   }, [level]);
 
   const movePlayer = (dir: number): void => {
     if (state.gameOver) {
+      return;
+    }
+
+    if (
+      !canMove(player, {
+        ...player.position,
+        x: player.position.x + dir
+      })
+    ) {
       return;
     }
 
@@ -128,20 +140,21 @@ export default function Tetris() {
       return;
     }
 
-    const collided = detectCollision(player, stage, {
+    const didCollide = detectCollision(player, stage, {
       ...player.position,
       y: player.position.y + 1
     });
 
     updatePlayerPosition(
       player.position.x,
-      player.position.y + (collided ? 0 : 1),
-      collided
+      player.position.y + (didCollide ? 0 : 1),
+      didCollide
     );
   };
 
   const dropPlayer = (): void => {
-    drop();
+    setDropSpeed(FAST_DROP_SPEED);
+    setHasReleased(false);
   };
 
   const play = (): void => {

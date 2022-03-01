@@ -12,7 +12,7 @@ const Next = (props: NextProps): ReactElement => {
   const { tetromino } = props;
 
   const renderTetromino = (): ReactElement => {
-    const stage = [
+    const renderStage = [
       [0, 0, 0],
       [0, 0, 0],
       [0, 0, 0],
@@ -26,13 +26,13 @@ const Next = (props: NextProps): ReactElement => {
           continue;
         }
 
-        stage[y][x] = tetromino.color;
+        renderStage[y][x] = tetromino.color;
       }
     }
 
     return (
       <div className={css.tetromino}>
-        {stage.map((row, index) => (
+        {renderStage.map((row, index) => (
           <div key={'p' + index} className={css.row}>
             {row.map((cell, n) => (
               <Cell key={'c' + index + '_' + n} color={cell} />

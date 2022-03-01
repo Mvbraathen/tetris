@@ -27,13 +27,22 @@ export const createStage = (): GameBoard => {
   return initialBoard;
 };
 
+export const canMove = (player: Player, position: Position): boolean => {
+  const bb = getTetrominoBB(player.tetromino, position);
+  if (bb[0] < 0 || bb[2] >= STAGE_WIDTH) {
+    return false;
+  }
+
+  return true;
+};
+
 export const detectCollision = (
   player: Player,
   stage: GameBoard,
   position: Position
 ): boolean => {
   const bb = getTetrominoBB(player.tetromino, position);
-  if (bb[1] < 0) {
+  if (bb[3] < 0) {
     return false;
   }
 
@@ -48,11 +57,20 @@ export const detectCollision = (
         continue;
       }
 
-      if (position.x + x < 0 || position.x + x >= STAGE_WIDTH) {
+      if (bb[0] < 0 || bb[2] > STAGE_WIDTH) {
         return true;
       }
 
-      if (position.y + y >= STAGE_HEIGHT) {
+      if (bb[3] >= STAGE_HEIGHT) {
+        return true;
+      }
+
+      if (
+        bb[1] >= 0 &&
+        (position.x + x < 0 ||
+          position.x + x >= STAGE_WIDTH ||
+          position.y + y < 0)
+      ) {
         return true;
       }
 
@@ -68,17 +86,30 @@ export const detectCollision = (
 const getTetrominoBB = (
   tetromino: Tetromino,
   position: Position
-): [number, number] => {
+): [number, number, number, number] => {
+  let left = 100;
   let top = -10;
-  let bottom = 0;
+  let right = -10;
+  let bottom = -10;
+
   for (let y = 0; y < tetromino.shape.length; y++) {
-    if (tetromino.shape[y].reduce((a: number, b: number) => a + b, 0) > 0) {
-      if (top === -10) {
-        top = position.y + y;
+    for (let x = 0; x < tetromino.shape[y].length; x++) {
+      if (tetromino.shape[y][x] !== 0) {
+        if (position.x + x < left) {
+          left = position.x + x;
+        }
+
+        if (position.x + x > right) {
+          right = position.x + x;
+        }
+
+        if (top === -10) {
+          top = position.y + y;
+        }
+        bottom = position.y + y;
       }
-      bottom = top + y;
     }
   }
 
-  return [top, bottom];
+  return [left, top, right, bottom];
 };
