@@ -83,7 +83,7 @@ export const detectCollision = (
   return false;
 };
 
-const getTetrominoBB = (
+export const getTetrominoBB = (
   tetromino: Tetromino,
   position: Position
 ): [number, number, number, number] => {

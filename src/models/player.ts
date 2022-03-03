@@ -4,6 +4,5 @@ import { Position } from './position';
 export interface Player {
   position: Position;
   tetromino: Tetromino;
-  nextTetromino: Tetromino;
   collided: boolean;
 }

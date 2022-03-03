@@ -14,7 +14,7 @@ export const useGameStatus = (
   const [score, setScore] = useState(0);
   const [rows, setRows] = useState(0);
   const [level, setLevel] = useState(1);
-  const [tetrominos, setTetromino] = useState(initialTetrominosList);
+  const [tetrominos, setTetrominos] = useState(initialTetrominosList);
 
   useEffect(() => {
     if (rowsCleared) {
@@ -37,9 +37,9 @@ export const useGameStatus = (
     setLevel(level + 1);
   };
 
-  const nextTetromino = (): void => {
-    setTetromino([tetrominos[1], randomTetromino()]);
+  const generateNextTetromino = (): void => {
+    setTetrominos([tetrominos[1], randomTetromino()]);
   };
 
-  return [score, rows, level, tetrominos, resetGame, nextTetromino];
+  return [score, rows, level, tetrominos, resetGame, generateNextTetromino];
 };

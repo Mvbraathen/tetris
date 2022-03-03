@@ -24,15 +24,10 @@ const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
-  const [
-    player,
-    updatePlayerPosition,
-    resetPlayer,
-    rotatePlayer,
-    applyTetromino
-  ] = usePlayer();
+  const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
+    usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
-  const [score, rows, level, tetrominos, resetGame, nextTetromino] =
+  const [score, rows, level, tetrominos, resetGame, generateNextTetromino] =
     useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [hasReleased, setHasReleased] = useState(true);
@@ -95,14 +90,13 @@ export default function Tetris() {
         });
         return;
       } else {
-        resetPlayer();
-        nextTetromino();
+        generateNextTetromino();
       }
     }
   }, [player.collided]);
 
   useEffect(() => {
-    applyTetromino(tetrominos[0]);
+    applyNextTetromino(tetrominos[0]);
   }, [tetrominos]);
 
   useEffect(() => {
@@ -158,8 +152,7 @@ export default function Tetris() {
   };
 
   const play = (): void => {
-    nextTetromino();
-    resetPlayer();
+    generateNextTetromino();
     resetGame();
     setStage(createStage());
     setState({

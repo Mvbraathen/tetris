@@ -1,8 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useState } from 'react';
 
 import {
   detectCollision,
   GameBoard,
+  getTetrominoBB,
   randomTetromino,
   Tetromino
 } from 'helpers';
@@ -10,16 +11,14 @@ import { Player } from '../models/player';
 import { STAGE_WIDTH } from 'components/stage/Stage';
 
 const initialPlayerState: Player = {
-  position: { x: STAGE_WIDTH / 2 - 2, y: -3 },
+  position: { x: STAGE_WIDTH / 2 - 2, y: -4 },
   tetromino: randomTetromino(),
-  nextTetromino: randomTetromino(),
   collided: false
 };
 
 export const usePlayer = (): [
   Player,
   (x: number, y: number, collided: boolean) => void,
-  any,
   (stage: GameBoard, dir: number) => void,
   (tetromino: Tetromino) => void
 ] => {
@@ -32,16 +31,6 @@ export const usePlayer = (): [
       collided
     });
   };
-
-  const resetPlayer = useCallback(() => {
-    setPlayer({
-      ...initialPlayerState,
-      position: {
-        x: STAGE_WIDTH / 2 - 2,
-        y: -1 * Math.max(2, player.tetromino.shape.length + 1)
-      }
-    });
-  }, []);
 
   const rotate = (tetromino: Tetromino, dir: number): Tetromino => {
     const transposedTetromino = player.tetromino.shape.map(
@@ -66,18 +55,20 @@ export const usePlayer = (): [
     setPlayer(clonedPlayer);
   };
 
-  const applyTetromino = (tetromino: Tetromino): void => {
+  const applyNextTetromino = (tetromino: Tetromino): void => {
+    const bb = getTetrominoBB(tetromino, player.position);
+    const height = bb[3] - bb[1] + 1;
+
     setPlayer({
       ...player,
-      tetromino
+      position: {
+        x: STAGE_WIDTH / 2 - 2,
+        y: -1 * height
+      },
+      tetromino,
+      collided: false
     });
   };
 
-  return [
-    player,
-    updatePlayerPosition,
-    resetPlayer,
-    rotatePlayer,
-    applyTetromino
-  ];
+  return [player, updatePlayerPosition, rotatePlayer, applyNextTetromino];
 };
