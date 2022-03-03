@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
+import StartScreen from '../startscreen/StartScreen';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import { canMove, createStage, detectCollision } from 'helpers';
@@ -10,11 +11,13 @@ import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
 
 interface GameState {
   gameOver: boolean;
+  startScreen: boolean;
   dropSpeed: number;
 }
 
 const initialGameState: GameState = {
-  gameOver: true,
+  gameOver: false,
+  startScreen: true,
   dropSpeed: 1100
 };
 
@@ -33,8 +36,8 @@ export default function Tetris() {
   const [hasReleased, setHasReleased] = useState(true);
   const [gamesPlayed, increaseGamesPlayed] = useState(0);
 
-  const keyDownHandler = (event: any): void => {
-    if (state.gameOver) {
+  const keyDownHandler = (event: { key: string }): void => {
+    if (state.gameOver || state.startScreen) {
       if (event.key === ' ' && hasReleased) {
         play();
       }
@@ -68,7 +71,7 @@ export default function Tetris() {
     return SPEED_FACTOR / level + LEVEL_FACTOR;
   };
 
-  const keyUpHandler = (event: any): void => {
+  const keyUpHandler = (event: { key: string }): void => {
     if (event.key === ' ' || event.key === 'ArrowDown') {
       setDropSpeed(levelSpeed);
       setHasReleased(true);
@@ -86,7 +89,8 @@ export default function Tetris() {
       if (player.position.y < 0) {
         setState({
           ...state,
-          gameOver: true
+          gameOver: true,
+          startScreen: false
         });
         return;
       } else {
@@ -130,7 +134,7 @@ export default function Tetris() {
   };
 
   const drop = (): void => {
-    if (state.gameOver) {
+    if (state.gameOver || state.startScreen) {
       return;
     }
 
@@ -157,7 +161,8 @@ export default function Tetris() {
     setStage(createStage());
     setState({
       ...state,
-      gameOver: false
+      gameOver: false,
+      startScreen: false
     });
     increaseGamesPlayed(gamesPlayed + 1);
 
@@ -173,18 +178,20 @@ export default function Tetris() {
     >
       <Stage stage={stage} />
       <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+      <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
       <aside>
         <Next tetromino={tetrominos[1]} />
         <Display content={'Score: ' + score} />
         <Display content={'Rows: ' + rows} />
         <Display content={'Level: ' + level} />
-        {state.gameOver && (
-          <div>
-            <button onClick={() => play()} tabIndex={-1}>
-              PLAY
-            </button>
-          </div>
-        )}
+        {state.gameOver ||
+          (state.startScreen && (
+            <div>
+              <button onClick={() => play()} tabIndex={-1}>
+                PLAY
+              </button>
+            </div>
+          ))}
       </aside>
     </section>
   );
