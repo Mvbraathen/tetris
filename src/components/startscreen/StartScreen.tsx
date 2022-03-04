@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Lottie from 'lottie-react';
+import animationData from '../../lotties/hiro-hiding.json';
 import css from './StartScreen.module.scss';
 
 interface StartScreenProps {
@@ -23,6 +25,12 @@ const StartScreen = (props: StartScreenProps) => {
         2: Press play or space to start the game.
       </p>
       <p className={css.StartScreenInformation}>3: Good luck, and have fun!</p>
+      <Lottie
+        animationData={animationData}
+        autoPlay
+        loop
+        style={{ height: 187 }}
+      />
     </div>
   );
 };
