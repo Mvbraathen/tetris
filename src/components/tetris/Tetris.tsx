@@ -184,14 +184,15 @@ export default function Tetris() {
         <Display content={'Score: ' + score} />
         <Display content={'Rows: ' + rows} />
         <Display content={'Level: ' + level} />
-        {state.gameOver ||
-          (state.startScreen && (
-            <div>
-              <button onClick={() => play()} tabIndex={-1}>
-                PLAY
-              </button>
-            </div>
-          ))}
+        {state.gameOver ? (
+          <button onClick={() => play()} tabIndex={-1}>
+            PLAY AGAIN
+          </button>
+        ) : state.startScreen ? (
+          <button onClick={() => play()} tabIndex={-1}>
+            PLAY
+          </button>
+        ) : null}
       </aside>
     </section>
   );
