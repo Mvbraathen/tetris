@@ -185,11 +185,28 @@ export default function Tetris() {
         <Display content={'Rows: ' + rows} />
         <Display content={'Level: ' + level} />
         {state.gameOver ? (
-          <button onClick={() => play()} tabIndex={-1}>
-            PLAY AGAIN
-          </button>
+          <div style={{ display: 'grid', gap: '0.25rem' }}>
+            <button
+              className={css.PlayAgainButton}
+              onClick={() => play()}
+              tabIndex={-1}
+            >
+              Try again
+            </button>
+            <button
+              className={css.HomeButton}
+              onClick={() => window.location.reload()}
+              tabIndex={-1}
+            >
+              Home
+            </button>
+          </div>
         ) : state.startScreen ? (
-          <button onClick={() => play()} tabIndex={-1}>
+          <button
+            className={css.PlayButton}
+            onClick={() => play()}
+            tabIndex={-1}
+          >
             PLAY
           </button>
         ) : null}
