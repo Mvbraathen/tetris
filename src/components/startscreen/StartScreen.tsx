@@ -29,7 +29,7 @@ const StartScreen = (props: StartScreenProps) => {
         animationData={animationData}
         autoPlay
         loop
-        style={{ height: 187 }}
+        style={{ height: 189 }}
       />
     </div>
   );
