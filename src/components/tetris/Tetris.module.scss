@@ -72,3 +72,8 @@
   cursor: pointer;
   user-select: none;
 }
+
+.ButtonPlacement {
+  display: grid;
+  gap: 0.25rem;
+}

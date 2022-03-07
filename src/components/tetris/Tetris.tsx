@@ -185,7 +185,7 @@ export default function Tetris() {
         <Display content={'Rows: ' + rows} />
         <Display content={'Level: ' + level} />
         {state.gameOver ? (
-          <div style={{ display: 'grid', gap: '0.25rem' }}>
+          <div className={css.ButtonPlacement}>
             <button
               className={css.PlayAgainButton}
               onClick={() => play()}
