@@ -19,6 +19,14 @@
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
+
+    &:disabled {
+      background: gray;
+      border-color: darkgrey;
+      color: #333;
+      opacity: 0;
+      transition: opacity 300ms ease-in;
+    }
   }
 
   aside {
@@ -41,6 +49,24 @@
         align-self: start;
         height: 8rem;
       }
+    }
+  }
+
+  .buttons {
+    display: none;
+  }
+}
+
+@media (any-hover: none) {
+  .Tetris .buttons {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1fr;
+    grid-gap: 1rem;
+    margin-top: 1rem;
+    color: white;
+
+    > button {
+      font-size: 3rem;
     }
   }
 }

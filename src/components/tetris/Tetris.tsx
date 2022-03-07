@@ -32,6 +32,11 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [hasReleased, setHasReleased] = useState(true);
   const [gamesPlayed, increaseGamesPlayed] = useState(0);
+  const [keyboardState, setKeyboardState] = useState({
+    left: false,
+    right: false,
+    down: false
+  });
 
   const keyDownHandler = (event: any): void => {
     if (state.gameOver) {
@@ -80,6 +85,20 @@ export default function Tetris() {
       drop();
     }
   }, dropSpeed);
+
+  useInterval(() => {
+    if (!state.gameOver) {
+      if (keyboardState.left) {
+        movePlayer(-1);
+      }
+      if (keyboardState.right) {
+        movePlayer(1);
+      }
+      if (keyboardState.down) {
+        dropPlayer();
+      }
+    }
+  }, 100);
 
   useEffect(() => {
     if (player.collided) {
@@ -164,6 +183,45 @@ export default function Tetris() {
     document.querySelector('section')?.focus();
   };
 
+  const handleButtonPressed = (key: string): void => {
+    const newState = { ...keyboardState };
+    switch (key) {
+      case 'left':
+        newState.left = true;
+        break;
+
+      case 'right':
+        newState.right = true;
+        break;
+
+      case 'down':
+        newState.down = true;
+        break;
+    }
+
+    setKeyboardState(newState);
+  };
+
+  const handleButtonReleased = (key: string): void => {
+    const newState = { ...keyboardState };
+    switch (key) {
+      case 'left':
+        newState.left = false;
+        break;
+
+      case 'right':
+        newState.right = false;
+        break;
+
+      case 'down':
+        newState.down = false;
+        setDropSpeed(levelSpeed);
+        break;
+    }
+
+    setKeyboardState(newState);
+  };
+
   return (
     <section
       className={css.Tetris}
@@ -186,6 +244,39 @@ export default function Tetris() {
           </div>
         )}
       </aside>
+      <div className={css.buttons}>
+        <button
+          disabled={state.gameOver}
+          onMouseDown={() => handleButtonPressed('left')}
+          onMouseUp={() => handleButtonReleased('left')}
+        >
+          &lt;
+        </button>
+        <div>
+          <button
+            disabled={state.gameOver}
+            onClick={() => rotatePlayer(stage, 1)}
+          >
+            ROTATE
+          </button>
+          <br />
+          <br />
+          <button
+            disabled={state.gameOver}
+            onMouseDown={() => handleButtonPressed('down')}
+            onMouseUp={() => handleButtonReleased('down')}
+          >
+            DOWN
+          </button>
+        </div>
+        <button
+          disabled={state.gameOver}
+          onMouseDown={() => handleButtonPressed('right')}
+          onMouseUp={() => handleButtonReleased('right')}
+        >
+          &gt;
+        </button>
+      </div>
     </section>
   );
 }
