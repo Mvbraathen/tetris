@@ -11,7 +11,7 @@ export default function Stage(props: { stage: GameBoard }) {
   const stage = props.stage;
 
   return (
-    <div className="stage">
+    <div className={'Stage'}>
       {stage.rows.map((row, index) => (
         <div key={'r-' + index} className="Row">
           {row.cells.map((cell, index) => (

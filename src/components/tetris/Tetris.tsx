@@ -18,6 +18,8 @@ const initialGameState: GameState = {
   dropSpeed: 1100
 };
 
+const LEFT = -1;
+const RIGHT = 1;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
 const FAST_DROP_SPEED = 25;
@@ -32,11 +34,9 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [hasReleased, setHasReleased] = useState(true);
   const [gamesPlayed, increaseGamesPlayed] = useState(0);
-  const [keyboardState, setKeyboardState] = useState({
-    left: false,
-    right: false,
-    down: false
-  });
+  const [leftPressState, setLeftPressState] = useState(false);
+  const [downPressState, setDownPressState] = useState(false);
+  const [rightPressState, setRightPressState] = useState(false);
 
   const keyDownHandler = (event: any): void => {
     if (state.gameOver) {
@@ -48,11 +48,11 @@ export default function Tetris() {
 
     switch (event.key) {
       case 'ArrowLeft':
-        movePlayer(-1);
+        movePlayer(LEFT);
         break;
 
       case 'ArrowRight':
-        movePlayer(1);
+        movePlayer(RIGHT);
         break;
 
       case 'ArrowDown':
@@ -88,13 +88,13 @@ export default function Tetris() {
 
   useInterval(() => {
     if (!state.gameOver) {
-      if (keyboardState.left) {
-        movePlayer(-1);
+      if (leftPressState) {
+        movePlayer(LEFT);
       }
-      if (keyboardState.right) {
-        movePlayer(1);
+      if (rightPressState) {
+        movePlayer(RIGHT);
       }
-      if (keyboardState.down) {
+      if (downPressState) {
         dropPlayer();
       }
     }
@@ -183,43 +183,41 @@ export default function Tetris() {
     document.querySelector('section')?.focus();
   };
 
-  const handleButtonPressed = (key: string): void => {
-    const newState = { ...keyboardState };
+  const handleButtonPressed = (key: string, event: any): void => {
+    event.preventDefault();
+
     switch (key) {
       case 'left':
-        newState.left = true;
+        setLeftPressState(true);
         break;
 
       case 'right':
-        newState.right = true;
+        setRightPressState(true);
         break;
 
       case 'down':
-        newState.down = true;
+        setDownPressState(true);
         break;
     }
-
-    setKeyboardState(newState);
   };
 
-  const handleButtonReleased = (key: string): void => {
-    const newState = { ...keyboardState };
+  const handleButtonReleased = (key: string, event: any): void => {
+    event.preventDefault();
+
     switch (key) {
       case 'left':
-        newState.left = false;
+        setLeftPressState(false);
         break;
 
       case 'right':
-        newState.right = false;
+        setRightPressState(false);
         break;
 
       case 'down':
-        newState.down = false;
+        setDownPressState(false);
         setDropSpeed(levelSpeed);
         break;
     }
-
-    setKeyboardState(newState);
   };
 
   return (
@@ -229,26 +227,28 @@ export default function Tetris() {
       onKeyUp={keyUpHandler}
       tabIndex={0}
     >
-      <Stage stage={stage} />
-      <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-      <aside>
-        <Next tetromino={tetrominos[1]} />
-        <Display content={'Score: ' + score} />
-        <Display content={'Rows: ' + rows} />
-        <Display content={'Level: ' + level} />
-        {state.gameOver && (
-          <div>
-            <button onClick={() => play()} tabIndex={-1}>
-              PLAY
-            </button>
-          </div>
-        )}
-      </aside>
+      <section>
+        <Stage stage={stage} />
+        <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+        <aside>
+          <Next tetromino={tetrominos[1]} />
+          <Display content={'Score: ' + score} />
+          <Display content={'Rows: ' + rows} />
+          <Display content={'Level: ' + level} />
+          {state.gameOver && (
+            <div>
+              <button onClick={() => play()} tabIndex={-1}>
+                PLAY
+              </button>
+            </div>
+          )}
+        </aside>
+      </section>
       <div className={css.buttons}>
         <button
           disabled={state.gameOver}
-          onTouchStart={() => handleButtonPressed('left')}
-          onTouchEnd={() => handleButtonReleased('left')}
+          onTouchStart={(event) => handleButtonPressed('left', event)}
+          onTouchEnd={(event) => handleButtonReleased('left', event)}
         >
           &lt;
         </button>
@@ -263,16 +263,16 @@ export default function Tetris() {
           <br />
           <button
             disabled={state.gameOver}
-            onTouchStart={() => handleButtonPressed('down')}
-            onTouchEnd={() => handleButtonReleased('down')}
+            onTouchStart={(event) => handleButtonPressed('down', event)}
+            onTouchEnd={(event) => handleButtonReleased('down', event)}
           >
             DOWN
           </button>
         </div>
         <button
           disabled={state.gameOver}
-          onTouchStart={() => handleButtonPressed('right')}
-          onTouchEnd={() => handleButtonReleased('right')}
+          onTouchStart={(event) => handleButtonPressed('right', event)}
+          onTouchEnd={(event) => handleButtonReleased('right', event)}
         >
           &gt;
         </button>
