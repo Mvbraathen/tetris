@@ -22,6 +22,7 @@
   box-sizing: border-box;
   transition: opacity 150ms ease-out;
   border: 0.1rem outset rgba(255, 255, 255, 0.2);
+  border-radius: 0.2rem;
 
   &[data-color='0'] {
     border-style: none;
