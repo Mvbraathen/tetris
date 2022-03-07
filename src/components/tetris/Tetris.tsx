@@ -195,6 +195,7 @@ export default function Tetris() {
             </button>
             <button
               className={css.HomeButton}
+              // Probably not the best way to "return" to startScreen but it works for now.
               onClick={() => window.location.reload()}
               tabIndex={-1}
             >
