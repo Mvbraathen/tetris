@@ -247,8 +247,8 @@ export default function Tetris() {
       <div className={css.buttons}>
         <button
           disabled={state.gameOver}
-          onMouseDown={() => handleButtonPressed('left')}
-          onMouseUp={() => handleButtonReleased('left')}
+          onTouchStart={() => handleButtonPressed('left')}
+          onTouchEnd={() => handleButtonReleased('left')}
         >
           &lt;
         </button>
@@ -263,16 +263,16 @@ export default function Tetris() {
           <br />
           <button
             disabled={state.gameOver}
-            onMouseDown={() => handleButtonPressed('down')}
-            onMouseUp={() => handleButtonReleased('down')}
+            onTouchStart={() => handleButtonPressed('down')}
+            onTouchEnd={() => handleButtonReleased('down')}
           >
             DOWN
           </button>
         </div>
         <button
           disabled={state.gameOver}
-          onMouseDown={() => handleButtonPressed('right')}
-          onMouseUp={() => handleButtonReleased('right')}
+          onTouchStart={() => handleButtonPressed('right')}
+          onTouchEnd={() => handleButtonReleased('right')}
         >
           &gt;
         </button>
