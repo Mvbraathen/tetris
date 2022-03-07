@@ -1,6 +1,6 @@
 import React from 'react';
-
 import Lottie from 'lottie-react';
+
 import animationData from '../../lotties/hiro-hiding.json';
 import css from './StartScreen.module.scss';
 
