@@ -34,45 +34,30 @@
   }
 }
 
-.PlayButton {
+button {
   width: 100%;
   height: fit-content;
   align-self: flex-end;
   padding: 0.5rem 1.7rem;
-  border: greenyellow outset;
   border-radius: 0.5rem;
-  background-color: green;
-  color: white;
   font-weight: 600;
   font-size: 1rem;
   cursor: pointer;
   user-select: none;
+}
+
+.PlayButton {
+  border: greenyellow outset;
+  background-color: green;
+  color: white;
 }
 
 .PlayAgainButton {
-  width: 100%;
-  height: fit-content;
-  align-self: flex-end;
-  padding: 0.5rem 1.7rem;
-  border-radius: 0.5rem;
   background-color: orange;
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  user-select: none;
 }
 
 .HomeButton {
-  width: 100%;
-  height: fit-content;
-  align-self: flex-end;
-  padding: 0.5rem 1.7rem;
-  border-radius: 0.5rem;
   background-color: rgb(0, 225, 255);
-  font-weight: 600;
-  font-size: 1rem;
-  cursor: pointer;
-  user-select: none;
 }
 
 .ButtonPlacement {
