@@ -115,6 +115,7 @@ export default function Tetris() {
   }, [player.collided]);
 
   useEffect(() => {
+    setDownPressState(false);
     applyNextTetromino(tetrominos[0]);
   }, [tetrominos]);
 
@@ -173,6 +174,7 @@ export default function Tetris() {
   const play = (): void => {
     generateNextTetromino();
     resetGame();
+    setDownPressState(false);
     setStage(createStage());
     setState({
       ...state,
