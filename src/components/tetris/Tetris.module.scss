@@ -10,6 +10,7 @@
     position: relative;
     height: 40rem;
     border: 0.3rem inset;
+    border-radius: 0.5rem;
     background-color: gray;
   }
 
@@ -44,6 +45,7 @@
     width: 8rem;
     padding: 0.5rem 0.2rem;
     border: silver outset;
+    border-radius: 0.5rem;
     box-sizing: border-box;
     color: white;
 
@@ -55,6 +57,37 @@
         height: 8rem;
       }
     }
+  }
+
+  button {
+    width: 100%;
+    height: fit-content;
+    align-self: flex-end;
+    padding: 0.5rem 1.7rem;
+    border: 0;
+    border-radius: 0.5rem;
+    color: #333333;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .PlayButton {
+    background-color: greenyellow;
+  }
+
+  .PlayAgainButton {
+    background-color: orange;
+  }
+
+  .HomeButton {
+    background-color: cyan;
+  }
+
+  .ButtonPlacement {
+    display: grid;
+    gap: 0.25rem;
   }
 
   .buttons {
