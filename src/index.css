@@ -5,6 +5,7 @@
 
 * {
   user-select: none;
+  box-sizing: content-box;
 }
 
 body {
@@ -20,6 +21,7 @@ body {
 
 button {
   font-family: inherit;
+  box-sizing: border-box;
 }
 
 code {

@@ -21,6 +21,8 @@ const initialGameState: GameState = {
   dropSpeed: 1100
 };
 
+const LEFT = -1;
+const RIGHT = 1;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
 const FAST_DROP_SPEED = 25;
@@ -35,6 +37,9 @@ export default function Tetris() {
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [hasReleased, setHasReleased] = useState(true);
   const [gamesPlayed, increaseGamesPlayed] = useState(0);
+  const [leftPressState, setLeftPressState] = useState(false);
+  const [downPressState, setDownPressState] = useState(false);
+  const [rightPressState, setRightPressState] = useState(false);
 
   const keyDownHandler = (event: { key: string }): void => {
     if (state.gameOver || state.startScreen) {
@@ -46,11 +51,11 @@ export default function Tetris() {
 
     switch (event.key) {
       case 'ArrowLeft':
-        movePlayer(-1);
+        movePlayer(LEFT);
         break;
 
       case 'ArrowRight':
-        movePlayer(1);
+        movePlayer(RIGHT);
         break;
 
       case 'ArrowDown':
@@ -84,6 +89,20 @@ export default function Tetris() {
     }
   }, dropSpeed);
 
+  useInterval(() => {
+    if (!state.gameOver) {
+      if (leftPressState) {
+        movePlayer(LEFT);
+      }
+      if (rightPressState) {
+        movePlayer(RIGHT);
+      }
+      if (downPressState) {
+        dropPlayer();
+      }
+    }
+  }, 100);
+
   useEffect(() => {
     if (player.collided) {
       if (player.position.y < 0) {
@@ -100,6 +119,7 @@ export default function Tetris() {
   }, [player.collided]);
 
   useEffect(() => {
+    setDownPressState(false);
     applyNextTetromino(tetrominos[0]);
   }, [tetrominos]);
 
@@ -169,6 +189,43 @@ export default function Tetris() {
     document.querySelector('section')?.focus();
   };
 
+  const handleButtonPressed = (key: string, event: any): void => {
+    event.preventDefault();
+
+    switch (key) {
+      case 'left':
+        setLeftPressState(true);
+        break;
+
+      case 'right':
+        setRightPressState(true);
+        break;
+
+      case 'down':
+        setDownPressState(true);
+        break;
+    }
+  };
+
+  const handleButtonReleased = (key: string, event: any): void => {
+    event.preventDefault();
+
+    switch (key) {
+      case 'left':
+        setLeftPressState(false);
+        break;
+
+      case 'right':
+        setRightPressState(false);
+        break;
+
+      case 'down':
+        setDownPressState(false);
+        setDropSpeed(levelSpeed);
+        break;
+    }
+  };
+
   return (
     <section
       className={css.Tetris}
@@ -176,42 +233,77 @@ export default function Tetris() {
       onKeyUp={keyUpHandler}
       tabIndex={0}
     >
-      <Stage stage={stage} />
-      <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-      <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
-      <aside>
-        <Next tetromino={tetrominos[1]} />
-        <Display content={'Score: ' + score} />
-        <Display content={'Rows: ' + rows} />
-        <Display content={'Level: ' + level} />
-        {state.gameOver ? (
-          <div className={css.ButtonPlacement}>
+      <section>
+        <Stage stage={stage} />
+        <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+        <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
+        <aside>
+          <Next tetromino={tetrominos[1]} />
+          <Display content={'Score: ' + score} />
+          <Display content={'Rows: ' + rows} />
+          <Display content={'Level: ' + level} />
+          {state.gameOver ? (
+            <div className={css.ButtonPlacement}>
+              <button
+                className={css.PlayAgainButton}
+                onClick={() => play()}
+                tabIndex={-1}
+              >
+                Try again
+              </button>
+              <button
+                className={css.HomeButton}
+                // Probably not the best way to "return" to startScreen but it works for now.
+                onClick={() => window.location.reload()}
+                tabIndex={-1}
+              >
+                Home
+              </button>
+            </div>
+          ) : state.startScreen ? (
             <button
-              className={css.PlayAgainButton}
+              className={css.PlayButton}
               onClick={() => play()}
               tabIndex={-1}
             >
-              Try again
+              PLAY
             </button>
-            <button
-              className={css.HomeButton}
-              // Probably not the best way to "return" to startScreen but it works for now.
-              onClick={() => window.location.reload()}
-              tabIndex={-1}
-            >
-              Home
-            </button>
-          </div>
-        ) : state.startScreen ? (
+          ) : null}
+        </aside>
+      </section>
+      <div className={css.buttons}>
+        <button
+          disabled={state.gameOver}
+          onTouchStart={(event) => handleButtonPressed('left', event)}
+          onTouchEnd={(event) => handleButtonReleased('left', event)}
+        >
+          &lt;
+        </button>
+        <div>
           <button
-            className={css.PlayButton}
-            onClick={() => play()}
-            tabIndex={-1}
+            disabled={state.gameOver}
+            onClick={() => rotatePlayer(stage, 1)}
           >
-            PLAY
+            ROTATE
           </button>
-        ) : null}
-      </aside>
+          <br />
+          <br />
+          <button
+            disabled={state.gameOver}
+            onTouchStart={(event) => handleButtonPressed('down', event)}
+            onTouchEnd={(event) => handleButtonReleased('down', event)}
+          >
+            DOWN
+          </button>
+        </div>
+        <button
+          disabled={state.gameOver}
+          onTouchStart={(event) => handleButtonPressed('right', event)}
+          onTouchEnd={(event) => handleButtonReleased('right', event)}
+        >
+          &gt;
+        </button>
+      </div>
     </section>
   );
 }
