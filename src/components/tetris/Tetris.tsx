@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Swipe from 'react-easy-swipe';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
@@ -35,6 +36,7 @@ const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
+  const [touchPosition, setTouchPosition] = useState(0);
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
@@ -202,105 +204,99 @@ export default function Tetris() {
     setGamesPlayed(0);
   };
 
+  const swipedDown = (): void => {
+    console.log('swiped down');
+  };
+
+  const swipeStart = (): void => {
+    setTouchPosition(0);
+  };
+
+  const swipeMove = (e: any): void => {
+    if (Math.abs(touchPosition - e.x) > 32) {
+      setTouchPosition(e.x);
+      if (e.x > touchPosition) {
+        movePlayer(RIGHT);
+      }
+      if (e.x < touchPosition) {
+        movePlayer(LEFT);
+      }
+    }
+  };
+
   return (
-    <section
-      className={css.Tetris}
-      onKeyDown={(event) => handleKeyPressed(event, state)}
-      onKeyUp={(event) => handleKeyReleased(event, state)}
-      tabIndex={0}
-      onContextMenu={(event) => {
-        event.stopPropagation();
-        event.preventDefault();
-      }}
+    <Swipe
+      onSwipeDown={swipedDown}
+      onSwipeStart={swipeStart}
+      onSwipeMove={swipeMove}
     >
-      <section>
-        <Stage stage={stage} />
-        <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-        <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
-        <aside>
-          <Next tetromino={tetrominos[1]} />
-          <Display content={'Score: ' + score} />
-          <Display content={'Rows: ' + rows} />
-          <Display content={'Level: ' + level} />
-          {state.gameOver ? (
-            <div className={css.ButtonPlacement}>
+      <section
+        className={css.Tetris}
+        onKeyDown={(event) => handleKeyPressed(event, state)}
+        onKeyUp={(event) => handleKeyReleased(event, state)}
+        tabIndex={0}
+        onContextMenu={(event) => {
+          event.stopPropagation();
+          event.preventDefault();
+        }}
+      >
+        <section>
+          <Stage stage={stage} onClick={() => rotatePlayer(stage, 1)} />
+          <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+          <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
+          <aside>
+            <Next tetromino={tetrominos[1]} />
+            <Display content={'Score: ' + score} />
+            <Display content={'Rows: ' + rows} />
+            <Display content={'Level: ' + level} />
+            {state.gameOver ? (
+              <div className={css.ButtonPlacement}>
+                <button
+                  className={css.PlayAgainButton}
+                  onClick={() => {
+                    play();
+                  }}
+                  tabIndex={-1}
+                >
+                  Try again
+                </button>
+                <button
+                  className={css.HomeButton}
+                  onClick={() => returnHome()}
+                  tabIndex={-1}
+                >
+                  Home
+                </button>
+              </div>
+            ) : state.startScreen ? (
               <button
-                className={css.PlayAgainButton}
-                onClick={() => {
-                  play();
-                }}
+                className={css.PlayButton}
+                onClick={() => play()}
                 tabIndex={-1}
               >
-                Try again
+                PLAY
               </button>
-              <button
-                className={css.HomeButton}
-                onClick={() => returnHome()}
-                tabIndex={-1}
-              >
-                Home
-              </button>
-            </div>
-          ) : state.startScreen ? (
+            ) : null}
+          </aside>
+        </section>
+        <div className={css.buttons}>
+          <span />
+          <div>
             <button
-              className={css.PlayButton}
-              onClick={() => play()}
-              tabIndex={-1}
+              disabled={state.gameOver}
+              onTouchStart={() => handleButtonPressed('down')}
+              onTouchEnd={() => handleButtonReleased('down')}
+              onContextMenu={(event) => {
+                event.stopPropagation();
+                event.preventDefault();
+              }}
             >
-              PLAY
+              DOWN
             </button>
-          ) : null}
-        </aside>
-      </section>
-      <div className={css.buttons}>
-        <button
-          disabled={state.gameOver}
-          onTouchStart={() => handleButtonPressed('left')}
-          onTouchEnd={() => handleButtonReleased('left')}
-          onContextMenu={(event) => {
-            event.stopPropagation();
-            event.preventDefault();
-          }}
-        >
-          &lt;
-        </button>
-        <div>
-          <button
-            disabled={state.gameOver}
-            onClick={() => rotatePlayer(stage, 1)}
-            onContextMenu={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-            }}
-          >
-            ROTATE
-          </button>
-          <br />
-          <br />
-          <button
-            disabled={state.gameOver}
-            onTouchStart={() => handleButtonPressed('down')}
-            onTouchEnd={() => handleButtonReleased('down')}
-            onContextMenu={(event) => {
-              event.stopPropagation();
-              event.preventDefault();
-            }}
-          >
-            DOWN
-          </button>
+          </div>
+          <span />
         </div>
-        <button
-          disabled={state.gameOver}
-          onTouchStart={() => handleButtonPressed('right')}
-          onTouchEnd={() => handleButtonReleased('right')}
-          onContextMenu={(event) => {
-            event.stopPropagation();
-            event.preventDefault();
-          }}
-        >
-          &gt;
-        </button>
-      </div>
-    </section>
+      </section>
+    </Swipe>
   );
 }
