@@ -1,5 +1,5 @@
 .Stage {
-  background: var(--background-color);
+  background: white;
 }
 
 .Row {
@@ -14,7 +14,7 @@
     line-height: 2rem;
 
     &[data-color='0'] {
-      border: 0.1rem outset rgba(255, 255, 255, 0.2);
+      border: 0.05rem outset white;
     }
   }
 }
@@ -37,28 +37,28 @@
     border-color: adjust-color(orange, $lightness: 20%);
   }
   &[data-color='2'] {
-    background: blue;
-    border-color: adjust-color(blue, $lightness: 20%);
+    background: #0000ff9e;
+    border-color: adjust-color(#0000ff9e, $lightness: 20%);
   }
   &[data-color='3'] {
-    background: red;
-    border-color: adjust-color(red, $lightness: 20%);
+    background: #fe5f63;
+    border-color: adjust-color(#fe5f63, $lightness: 20%);
   }
   &[data-color='4'] {
-    background: green;
-    border-color: adjust-color(green, $lightness: 20%);
+    background: #49bca1;
+    border-color: adjust-color(#49bca1, $lightness: 20%);
   }
   &[data-color='5'] {
-    background: yellow;
-    border-color: adjust-color(yellow, $lightness: 20%);
+    background: #fdd645;
+    border-color: adjust-color(#fdd645, $lightness: 20%);
   }
   &[data-color='6'] {
-    background: purple;
-    border-color: adjust-color(purple, $lightness: 20%);
+    background: #800080cf;
+    border-color: adjust-color(#800080cf, $lightness: 20%);
   }
   &[data-color='7'] {
-    background: cyan;
-    border-color: adjust-color(cyan, $lightness: 20%);
+    background: #2acff5;
+    border-color: adjust-color(#2acff5, $lightness: 20%);
   }
   &[data-color='255'] {
     opacity: 0;
