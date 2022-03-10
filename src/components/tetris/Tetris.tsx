@@ -190,7 +190,21 @@ export default function Tetris() {
     document.querySelector('section')?.focus();
   };
 
-  const handleButtonPressed = (key: string, event: any): void => {
+  const returnHome = (): void => {
+    setState({
+      ...state,
+      gameOver: false,
+      startScreen: true
+    });
+    resetGame();
+    setStage(createStage());
+    increaseGamesPlayed(0);
+  };
+
+  const handleButtonPressed = (
+    key: string,
+    event: React.TouchEvent<HTMLButtonElement>
+  ): void => {
     event.preventDefault();
 
     switch (key) {
@@ -208,7 +222,10 @@ export default function Tetris() {
     }
   };
 
-  const handleButtonReleased = (key: string, event: any): void => {
+  const handleButtonReleased = (
+    key: string,
+    event: React.TouchEvent<HTMLButtonElement>
+  ): void => {
     event.preventDefault();
 
     switch (key) {
@@ -247,15 +264,16 @@ export default function Tetris() {
             <div className={css.ButtonPlacement}>
               <button
                 className={css.PlayAgainButton}
-                onClick={() => play()}
+                onClick={() => {
+                  play();
+                }}
                 tabIndex={-1}
               >
                 Try again
               </button>
               <button
                 className={css.HomeButton}
-                // Probably not the best way to "return" to startScreen but it works for now.
-                onClick={() => window.location.reload()}
+                onClick={() => returnHome()}
                 tabIndex={-1}
               >
                 Home
