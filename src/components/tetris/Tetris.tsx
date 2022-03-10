@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
 
-import Lottie from 'lottie-react';
-import animationData from '../../lotties/countdown.json';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
