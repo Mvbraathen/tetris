@@ -16,11 +16,12 @@
 
   button {
     width: 100%;
+    height: fit-content;
+    align-self: flex-end;
     padding: 0.5rem 1.7rem;
-    border: greenyellow outset;
+    border: 0;
     border-radius: 0.5rem;
-    background-color: green;
-    color: white;
+    color: #333333;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
@@ -59,30 +60,16 @@
     }
   }
 
-  button {
-    width: 100%;
-    height: fit-content;
-    align-self: flex-end;
-    padding: 0.5rem 1.7rem;
-    border: 0;
-    border-radius: 0.5rem;
-    color: #333333;
-    font-weight: 600;
-    font-size: 1rem;
-    cursor: pointer;
-    user-select: none;
-  }
-
   .PlayButton {
-    background-color: greenyellow;
+    background-color: #49bca1;
   }
 
   .PlayAgainButton {
-    background-color: orange;
+    background-color: #fdd645;
   }
 
   .HomeButton {
-    background-color: cyan;
+    background-color: #2acff5;
   }
 
   .ButtonPlacement {
@@ -108,10 +95,12 @@
     > button {
       font-size: 3rem;
       pointer-events: all;
+      height: 100%;
     }
 
-    .button {
-      background: orange;
+    button {
+      background: #2acff5;
+      color: white;
     }
   }
 }
