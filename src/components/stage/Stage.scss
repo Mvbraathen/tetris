@@ -33,32 +33,32 @@
   }
 
   &[data-color='1'] {
-    background: orange;
-    border-color: adjust-color(orange, $lightness: 20%);
+    background: #ffa826;
+    border-color: adjust-color(#ffa826, $lightness: 20%);
   }
   &[data-color='2'] {
     background: #0000ff9e;
     border-color: adjust-color(#0000ff9e, $lightness: 20%);
   }
   &[data-color='3'] {
-    background: #fe5f63;
-    border-color: adjust-color(#fe5f63, $lightness: 20%);
+    background: #ff5f63;
+    border-color: adjust-color(#ff5f63, $lightness: 20%);
   }
   &[data-color='4'] {
     background: #49bca1;
     border-color: adjust-color(#49bca1, $lightness: 20%);
   }
   &[data-color='5'] {
-    background: #fdd645;
-    border-color: adjust-color(#fdd645, $lightness: 20%);
+    background: #fed546;
+    border-color: adjust-color(#fed546, $lightness: 20%);
   }
   &[data-color='6'] {
-    background: #800080cf;
-    border-color: adjust-color(#800080cf, $lightness: 20%);
+    background: #b770ff;
+    border-color: adjust-color(#b770ff, $lightness: 20%);
   }
   &[data-color='7'] {
-    background: #2acff5;
-    border-color: adjust-color(#2acff5, $lightness: 20%);
+    background: #29cff5;
+    border-color: adjust-color(#29cff5, $lightness: 20%);
   }
   &[data-color='255'] {
     opacity: 0;
