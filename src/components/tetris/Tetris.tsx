@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Swipe from 'react-easy-swipe';
+import Swipe, { SwipeEvent, SwipePosition } from 'react-easy-swipe';
+import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
@@ -36,7 +37,7 @@ const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
-  const [touchPosition, setTouchPosition] = useState(0);
+  const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
@@ -54,6 +55,13 @@ export default function Tetris() {
     handleButtonPressed,
     handleButtonReleased
   ] = useController();
+
+  const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
+  const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
+  const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
+  const [playDropSound] = useSound('/assets/sfx/drop1.mp3');
+  const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
+  const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
 
   const levelSpeed = (): number => {
     return SPEED_FACTOR / level + LEVEL_FACTOR;
@@ -75,6 +83,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (rotatePressState) {
+      playRotateSound();
       rotatePlayer(stage, 1);
     }
   }, [rotatePressState]);
@@ -96,6 +105,7 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
+        playYouLose();
         return;
       } else {
         generateNextTetromino();
@@ -104,13 +114,18 @@ export default function Tetris() {
   }, [player.collided]);
 
   useEffect(() => {
-    // setDownPressState(false);
     applyNextTetromino(tetrominos[0]);
   }, [tetrominos]);
 
   useEffect(() => {
     setDropSpeed(levelSpeed);
   }, [level]);
+
+  useEffect(() => {
+    if (rowsCleared > 0) {
+      playRemoveLine();
+    }
+  }, [rowsCleared]);
 
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
@@ -143,6 +158,7 @@ export default function Tetris() {
         x: player.position.x + dir
       })
     ) {
+      playHitWallSound();
       return;
     }
 
@@ -167,6 +183,10 @@ export default function Tetris() {
       ...player.position,
       y: player.position.y + 1
     });
+
+    if (didCollide) {
+      playHitFloorSound();
+    }
 
     updatePlayerPosition(
       player.position.x,
@@ -209,26 +229,40 @@ export default function Tetris() {
   };
 
   const swipeStart = (): void => {
-    setTouchPosition(0);
+    setTouchPosition({ x: 0, y: 0 });
   };
 
-  const swipeMove = (e: any): void => {
-    if (Math.abs(touchPosition - e.x) > 32) {
-      setTouchPosition(e.x);
-      if (e.x > touchPosition) {
+  const swipeMove = (position: SwipePosition, event: SwipeEvent): void => {
+    const delta = {
+      x: touchPosition.x - position.x,
+      y: touchPosition.y - position.y
+    };
+    if (Math.abs(delta.x) > 32) {
+      setTouchPosition({ ...position });
+      if (position.x > touchPosition.x) {
         movePlayer(RIGHT);
       }
-      if (e.x < touchPosition) {
+      if (position.x < touchPosition.x) {
         movePlayer(LEFT);
       }
     }
+
+    console.log(event);
+
+    if (delta.y < -50) {
+      swipedDown();
+    }
+  };
+
+  const swipeEnd = (e: any): void => {
+    console.log('END', e.changedTouches[0]);
   };
 
   return (
     <Swipe
-      onSwipeDown={swipedDown}
       onSwipeStart={swipeStart}
       onSwipeMove={swipeMove}
+      onSwipeEnd={swipeEnd}
     >
       <section
         className={css.Tetris}
@@ -241,7 +275,7 @@ export default function Tetris() {
         }}
       >
         <section>
-          <Stage stage={stage} onClick={() => rotatePlayer(stage, 1)} />
+          <Stage stage={stage} />
           <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
           <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
           <aside>
@@ -249,31 +283,26 @@ export default function Tetris() {
             <Display content={'Score: ' + score} />
             <Display content={'Rows: ' + rows} />
             <Display content={'Level: ' + level} />
+            <Display content={'Speed: ' + levelSpeed()} />
             {state.gameOver ? (
               <div className={css.ButtonPlacement}>
                 <button
                   className={css.PlayAgainButton}
-                  onClick={() => {
-                    play();
-                  }}
+                  onClick={play}
                   tabIndex={-1}
                 >
                   Try again
                 </button>
                 <button
                   className={css.HomeButton}
-                  onClick={() => returnHome()}
+                  onClick={returnHome}
                   tabIndex={-1}
                 >
                   Home
                 </button>
               </div>
             ) : state.startScreen ? (
-              <button
-                className={css.PlayButton}
-                onClick={() => play()}
-                tabIndex={-1}
-              >
+              <button className={css.PlayButton} onClick={play} tabIndex={-1}>
                 PLAY
               </button>
             ) : null}
