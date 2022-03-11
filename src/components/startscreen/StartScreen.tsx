@@ -29,12 +29,7 @@ const StartScreen = (props: StartScreenProps) => {
         animationData={animationData}
         autoPlay
         loop
-        style={{
-          height: '184px',
-          position: 'absolute',
-          bottom: '-0.6rem',
-          right: '3rem'
-        }}
+        className={css.LottieStartScreenStyle}
       />
     </div>
   );
