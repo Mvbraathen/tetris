@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
+import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
+import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
@@ -245,84 +247,107 @@ export default function Tetris() {
   };
 
   return (
-    <section
-      className={css.Tetris}
-      onKeyDown={keyDownHandler}
-      onKeyUp={keyUpHandler}
-      tabIndex={0}
-    >
-      <section>
-        <Stage stage={stage} />
-        <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-        <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
-        <aside>
+    <>
+      <div className={css.TopPlacement}>
+        <div className={css.DisplayGrid}>
+          <Display
+            content={'Rader: ' + rows}
+            style={{ backgroundColor: '#29cff5' }}
+          />
+          <Display
+            content={'Nivå: ' + level}
+            style={{ backgroundColor: '#49bca1' }}
+          />
+        </div>
+        <ComputasLogo className={css.ComputasLogo} />
+        <div className={css.DisplayGrid}>
+          <Display
+            content={'Høyeste poengsum: '}
+            style={{ backgroundColor: '#ff5f63' }}
+          />
+          <Display
+            content={'Poeng: ' + score}
+            style={{ backgroundColor: '#fed546' }}
+          />
+        </div>
+      </div>
+      <section
+        className={css.Tetris}
+        onKeyDown={keyDownHandler}
+        onKeyUp={keyUpHandler}
+        tabIndex={0}
+      >
+        <section>
+          <Stage stage={stage} />
+          <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+          <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
           <Next tetromino={tetrominos[1]} />
-          <Display content={'Score: ' + score} />
-          <Display content={'Rows: ' + rows} />
-          <Display content={'Level: ' + level} />
-          {state.gameOver ? (
-            <div className={css.ButtonPlacement}>
+          <aside>
+            <TetrisVertical className={css.VerticalTetrisLogo} />
+            {state.gameOver ? (
+              <div className={css.ButtonPlacement}>
+                <button
+                  className={css.PlayAgainButton}
+                  onClick={() => {
+                    play();
+                  }}
+                  tabIndex={-1}
+                >
+                  Prøv igjen
+                </button>
+                <button
+                  className={css.HomeButton}
+                  onClick={() => returnHome()}
+                  tabIndex={-1}
+                >
+                  Hjem
+                </button>
+              </div>
+            ) : state.startScreen ? (
               <button
-                className={css.PlayAgainButton}
-                onClick={() => {
-                  play();
-                }}
+                className={css.PlayButton}
+                onClick={() => play()}
                 tabIndex={-1}
               >
-                Try again
+                START
               </button>
-              <button
-                className={css.HomeButton}
-                onClick={() => returnHome()}
-                tabIndex={-1}
-              >
-                Home
-              </button>
-            </div>
-          ) : state.startScreen ? (
-            <button
-              className={css.PlayButton}
-              onClick={() => play()}
-              tabIndex={-1}
-            >
-              PLAY
-            </button>
-          ) : null}
-        </aside>
-      </section>
-      <div className={css.buttons}>
-        <button
-          disabled={state.gameOver}
-          onTouchStart={(event) => handleButtonPressed('left', event)}
-          onTouchEnd={(event) => handleButtonReleased('left', event)}
-        >
-          &lt;
-        </button>
-        <div>
+            ) : null}
+          </aside>
+        </section>
+        <div className={css.buttons}>
           <button
             disabled={state.gameOver}
-            onClick={() => rotatePlayer(stage, 1)}
+            onTouchStart={(event) => handleButtonPressed('left', event)}
+            onTouchEnd={(event) => handleButtonReleased('left', event)}
           >
-            ROTATE
+            &lt;
           </button>
-          <br />
-          <br />
+          <div>
+            <button
+              disabled={state.gameOver}
+              onClick={() => rotatePlayer(stage, 1)}
+            >
+              ROTATE
+            </button>
+            <br />
+            <br />
+            <button
+              disabled={state.gameOver}
+              onTouchStart={(event) => handleButtonPressed('down', event)}
+              onTouchEnd={(event) => handleButtonReleased('down', event)}
+            >
+              DOWN
+            </button>
+          </div>
           <button
             disabled={state.gameOver}
-            onTouchStart={(event) => handleButtonPressed('down', event)}
-            onTouchEnd={(event) => handleButtonReleased('down', event)}
+            onTouchStart={(event) => handleButtonPressed('right', event)}
+            onTouchEnd={(event) => handleButtonReleased('right', event)}
           >
-            DOWN
+            &gt;
           </button>
         </div>
-        <button
-          disabled={state.gameOver}
-          onTouchStart={(event) => handleButtonPressed('right', event)}
-          onTouchEnd={(event) => handleButtonReleased('right', event)}
-        >
-          &gt;
-        </button>
-      </div>
-    </section>
+      </section>
+    </>
   );
 }
