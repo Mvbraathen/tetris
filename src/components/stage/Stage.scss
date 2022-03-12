@@ -1,5 +1,5 @@
 .Stage {
-  background: white;
+  background: var(--background-color);
 }
 
 .Row {
@@ -7,14 +7,14 @@
   grid-template-columns: repeat(12, 1fr);
 
   .Cell {
-    width: 2rem;
+    width: 100%;
     height: 2rem;
     border: 0.1rem outset rgba(255, 255, 255, 0.3);
     background: var(--background-color);
     line-height: 2rem;
 
     &[data-color='0'] {
-      border: 0.05rem outset white;
+      border: 0.05rem outset rgba(255, 255, 255, 0.3);
     }
   }
 }
@@ -24,7 +24,7 @@
   color: white;
   text-align: center;
   box-sizing: border-box;
-  transition: opacity 150ms ease-out;
+  // transition: opacity 150ms ease-out;
   border: 0.1rem outset rgba(255, 255, 255, 0.2);
   border-radius: 0.2rem;
 
@@ -37,7 +37,7 @@
     border-color: adjust-color(orange, $lightness: 20%);
   }
   &[data-color='2'] {
-    background: #0000ff9e;
+    background: #00ff9e;
     border-color: adjust-color(#0000ff9e, $lightness: 20%);
   }
   &[data-color='3'] {
@@ -60,6 +60,48 @@
     background: #2acff5;
     border-color: adjust-color(#2acff5, $lightness: 20%);
   }
+
+  &[data-color='201'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='202'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='203'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='204'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='205'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='206'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+  &[data-color='207'] {
+    background: black;
+    border-color: adjust-color(black, $lightness: 20%);
+    opacity: 0.4;
+  }
+
+  &[data-color='254'] {
+    background: #ffffff;
+    border-color: #ffffff;
+  }
+
   &[data-color='255'] {
     opacity: 0;
   }
