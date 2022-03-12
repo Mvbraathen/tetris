@@ -8,7 +8,12 @@ import GameOver from '../gameover/GameOver';
 import StartScreen from '../startscreen/StartScreen';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
-import { canMove, createStage, detectCollision } from 'helpers';
+import {
+  calculateLandingRow,
+  canMove,
+  createStage,
+  detectCollision
+} from 'helpers';
 import {
   useController,
   useGameStatus,
@@ -33,7 +38,6 @@ const LEFT = -1;
 const RIGHT = 1;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
-const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -72,12 +76,14 @@ export default function Tetris() {
   }, []);
 
   useEffect(() => {
-    if (!downPressState) {
-      setDropSpeed(levelSpeed);
-    } else {
+    if (downPressState) {
       if (state.gameOver || state.startScreen) {
         play();
+        return;
       }
+
+      const row = calculateLandingRow(player, stage);
+      updatePlayerPosition(player.position.x, row, true);
     }
   }, [downPressState]);
 
@@ -141,9 +147,6 @@ export default function Tetris() {
       if (rightPressState) {
         movePlayer(RIGHT);
       }
-      if (downPressState) {
-        dropPlayer();
-      }
     }
   }, 130);
 
@@ -193,10 +196,6 @@ export default function Tetris() {
       player.position.y + (didCollide ? 0 : 1),
       didCollide
     );
-  };
-
-  const dropPlayer = (): void => {
-    setDropSpeed(FAST_DROP_SPEED);
   };
 
   const play = (): void => {

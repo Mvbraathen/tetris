@@ -113,3 +113,49 @@ export const getTetrominoBB = (
 
   return [left, top, right, bottom];
 };
+
+export const calculateLandingRow = (
+  player: Player,
+  stage: GameBoard
+): number => {
+  const bb = getTetrominoBB(player.tetromino, { x: 0, y: 0 });
+  const height = bb[3] - bb[1] + 1;
+
+  let landingAt = stage.rows.length - height;
+  let collision = false;
+  for (
+    let ry = player.position.y + bb[1];
+    ry <= stage.rows.length - height;
+    ry++
+  ) {
+    for (let y = 0; y <= bb[3]; y++) {
+      const examineY = ry + y;
+      for (let x = bb[0]; x <= bb[2]; x++) {
+        const pixel = player.tetromino.shape[y][x];
+        if (!pixel) {
+          continue;
+        }
+
+        if (examineY < 0 || examineY >= stage.rows.length) {
+          continue;
+        }
+
+        if (stage.rows[examineY].cells[player.position.x + x].locked) {
+          collision = true;
+          landingAt = ry - 1 + bb[1];
+          break;
+        }
+      }
+
+      if (collision) {
+        break;
+      }
+    }
+
+    if (collision) {
+      break;
+    }
+  }
+
+  return landingAt;
+};
