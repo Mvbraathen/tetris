@@ -253,7 +253,7 @@ export default function Tetris() {
     >
       <section>
         <Stage stage={stage} />
-        <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+        <GameOver gameOver={state.gameOver && gamesPlayed > 0} score={score} />
         <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
         <aside>
           <Next tetromino={tetrominos[1]} />
