@@ -44,11 +44,6 @@
     padding: 0.5rem 0.2rem;
     border-radius: 0.5rem;
     box-sizing: border-box;
-    color: white;
-
-    > div {
-      align-self: end;
-    }
   }
 
   .PlayButton {
@@ -118,4 +113,5 @@
 
 .ComputasLogo {
   width: 5rem;
+  min-width: 5rem;
 }
