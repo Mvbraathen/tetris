@@ -27,8 +27,8 @@ export const useStage = (
     const newStage = { ...stage };
 
     clearStage(newStage);
-    renderTetromino(player, newStage);
     renderDropPreview(player, newStage);
+    renderTetromino(player, newStage);
 
     const lines = checkLines(newStage);
     setRowsCleared(lines);
