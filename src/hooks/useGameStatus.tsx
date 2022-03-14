@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { randomTetromino, Tetromino } from '../helpers';
 
+const LEVEL_INCREASE_COUNT = 2;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
 const initialTetrominosList: Tetromino[] = [
   randomTetromino(),
@@ -21,8 +22,8 @@ export const useGameStatus = (
       setRows(rows + rowsCleared);
       setScore(score + pointsTable[rowsCleared] * level);
 
-      if (rows + rowsCleared >= level * 10) {
-        increaseLevel();
+      if (rows + rowsCleared >= level * LEVEL_INCREASE_COUNT) {
+        setLevel(1 + Math.ceil((rows + rowsCleared) / LEVEL_INCREASE_COUNT));
       }
     }
   }, [rowsCleared]);
@@ -31,10 +32,6 @@ export const useGameStatus = (
     setScore(0);
     setRows(0);
     setLevel(1);
-  };
-
-  const increaseLevel = (): void => {
-    setLevel(level + 1);
   };
 
   const generateNextTetromino = (): void => {

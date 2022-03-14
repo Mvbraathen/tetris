@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import Swipe from 'react-easy-swipe';
 
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
 import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
@@ -8,10 +9,21 @@ import GameOver from '../gameover/GameOver';
 import StartScreen from '../startscreen/StartScreen';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
-import { canMove, createStage, detectCollision } from 'helpers';
-import { useGameStatus, useInterval, usePlayer, useStage } from 'hooks';
+import {
+  calculateLandingRow,
+  canMove,
+  createStage,
+  detectCollision
+} from 'helpers';
+import {
+  useController,
+  useGameStatus,
+  useInterval,
+  usePlayer,
+  useStage
+} from 'hooks';
 
-interface GameState {
+export interface GameState {
   gameOver: boolean;
   startScreen: boolean;
   dropSpeed: number;
@@ -27,83 +39,62 @@ const LEFT = -1;
 const RIGHT = 1;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
-const FAST_DROP_SPEED = 25;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
+  const [touchPosition, setTouchPosition] = useState(0);
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
   const [score, rows, level, tetrominos, resetGame, generateNextTetromino] =
     useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
-  const [hasReleased, setHasReleased] = useState(true);
-  const [gamesPlayed, increaseGamesPlayed] = useState(0);
-  const [leftPressState, setLeftPressState] = useState(false);
-  const [downPressState, setDownPressState] = useState(false);
-  const [rightPressState, setRightPressState] = useState(false);
-
-  const keyDownHandler = (event: { key: string }): void => {
-    if (state.gameOver || state.startScreen) {
-      if (event.key === ' ' && hasReleased) {
-        play();
-      }
-      return;
-    }
-
-    switch (event.key) {
-      case 'ArrowLeft':
-        movePlayer(LEFT);
-        break;
-
-      case 'ArrowRight':
-        movePlayer(RIGHT);
-        break;
-
-      case 'ArrowDown':
-        dropPlayer();
-        break;
-
-      case 'ArrowUp':
-        rotatePlayer(stage, 1);
-        break;
-
-      case ' ':
-        dropPlayer();
-        break;
-    }
-  };
+  const [gamesPlayed, setGamesPlayed] = useState(0);
+  const [
+    leftPressState,
+    rightPressState,
+    downPressState,
+    rotatePressState,
+    handleKeyPressed,
+    handleKeyReleased,
+    handleButtonPressed,
+    handleButtonReleased
+  ] = useController();
 
   const levelSpeed = (): number => {
     return SPEED_FACTOR / level + LEVEL_FACTOR;
   };
 
-  const keyUpHandler = (event: { key: string }): void => {
-    if (event.key === ' ' || event.key === 'ArrowDown') {
-      setDropSpeed(levelSpeed);
-      setHasReleased(true);
-    }
-  };
+  useEffect(() => {
+    document.querySelector('section')?.focus();
+  }, []);
 
-  useInterval(() => {
-    if (!state.gameOver || !player.collided) {
-      drop();
-    }
-  }, dropSpeed);
+  useEffect(() => {
+    if (downPressState) {
+      if (state.gameOver || state.startScreen) {
+        play();
+        return;
+      }
 
-  useInterval(() => {
-    if (!state.gameOver) {
-      if (leftPressState) {
-        movePlayer(LEFT);
-      }
-      if (rightPressState) {
-        movePlayer(RIGHT);
-      }
-      if (downPressState) {
-        dropPlayer();
-      }
+      const row = calculateLandingRow(player, stage);
+      updatePlayerPosition(player.position.x, row, true);
     }
-  }, 100);
+  }, [downPressState]);
+
+  useEffect(() => {
+    if (rotatePressState) {
+      rotatePlayer(stage, 1);
+    }
+  }, [rotatePressState]);
+
+  useEffect(() => {
+    if (leftPressState) {
+      movePlayer(LEFT);
+    }
+    if (rightPressState) {
+      movePlayer(RIGHT);
+    }
+  }, [leftPressState, rightPressState]);
 
   useEffect(() => {
     if (player.collided) {
@@ -121,13 +112,29 @@ export default function Tetris() {
   }, [player.collided]);
 
   useEffect(() => {
-    setDownPressState(false);
     applyNextTetromino(tetrominos[0]);
   }, [tetrominos]);
 
   useEffect(() => {
     setDropSpeed(levelSpeed);
   }, [level]);
+
+  useInterval(() => {
+    if (!state.gameOver || !player.collided) {
+      drop();
+    }
+  }, dropSpeed);
+
+  useInterval(() => {
+    if (!state.gameOver) {
+      if (leftPressState) {
+        movePlayer(LEFT);
+      }
+      if (rightPressState) {
+        movePlayer(RIGHT);
+      }
+    }
+  }, 130);
 
   const movePlayer = (dir: number): void => {
     if (state.gameOver) {
@@ -172,22 +179,16 @@ export default function Tetris() {
     );
   };
 
-  const dropPlayer = (): void => {
-    setDropSpeed(FAST_DROP_SPEED);
-    setHasReleased(false);
-  };
-
   const play = (): void => {
     generateNextTetromino();
     resetGame();
-    setDownPressState(false);
     setStage(createStage());
     setState({
       ...state,
       gameOver: false,
       startScreen: false
     });
-    increaseGamesPlayed(gamesPlayed + 1);
+    setGamesPlayed(gamesPlayed + 1);
 
     document.querySelector('section')?.focus();
   };
@@ -200,49 +201,26 @@ export default function Tetris() {
     });
     resetGame();
     setStage(createStage());
-    increaseGamesPlayed(0);
+    setGamesPlayed(0);
   };
 
-  const handleButtonPressed = (
-    key: string,
-    event: React.TouchEvent<HTMLButtonElement>
-  ): void => {
-    event.preventDefault();
-
-    switch (key) {
-      case 'left':
-        setLeftPressState(true);
-        break;
-
-      case 'right':
-        setRightPressState(true);
-        break;
-
-      case 'down':
-        setDownPressState(true);
-        break;
-    }
+  const swipedDown = (): void => {
+    console.log('swiped down');
   };
 
-  const handleButtonReleased = (
-    key: string,
-    event: React.TouchEvent<HTMLButtonElement>
-  ): void => {
-    event.preventDefault();
+  const swipeStart = (): void => {
+    setTouchPosition(0);
+  };
 
-    switch (key) {
-      case 'left':
-        setLeftPressState(false);
-        break;
-
-      case 'right':
-        setRightPressState(false);
-        break;
-
-      case 'down':
-        setDownPressState(false);
-        setDropSpeed(levelSpeed);
-        break;
+  const swipeMove = (e: any): void => {
+    if (Math.abs(touchPosition - e.x) > 32) {
+      setTouchPosition(e.x);
+      if (e.x > touchPosition) {
+        movePlayer(RIGHT);
+      }
+      if (e.x < touchPosition) {
+        movePlayer(LEFT);
+      }
     }
   };
 
@@ -271,83 +249,77 @@ export default function Tetris() {
           />
         </div>
       </div>
-      <section
-        className={css.Tetris}
-        onKeyDown={keyDownHandler}
-        onKeyUp={keyUpHandler}
-        tabIndex={0}
+      <Swipe
+        onSwipeDown={swipedDown}
+        onSwipeStart={swipeStart}
+        onSwipeMove={swipeMove}
       >
-        <section>
-          <Stage stage={stage} />
-          <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-          <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
-          <Next tetromino={tetrominos[1]} />
-          <aside>
-            <TetrisVertical className={css.VerticalTetrisLogo} />
-            {state.gameOver ? (
-              <div className={css.ButtonPlacement}>
+        <section
+          className={css.Tetris}
+          onKeyDown={(event) => handleKeyPressed(event, state)}
+          onKeyUp={(event) => handleKeyReleased(event, state)}
+          tabIndex={0}
+          onContextMenu={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+          }}
+        >
+          <section>
+            <Stage stage={stage} onClick={() => rotatePlayer(stage, 1)} />
+            <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+            <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
+            <Next tetromino={tetrominos[1]} />
+            <aside>
+              <TetrisVertical className={css.VerticalTetrisLogo} />
+              {state.gameOver ? (
+                <div className={css.ButtonPlacement}>
+                  <button
+                    className={css.PlayAgainButton}
+                    onClick={() => {
+                      play();
+                    }}
+                    tabIndex={-1}
+                  >
+                    Prøv igjen
+                  </button>
+                  <button
+                    className={css.HomeButton}
+                    onClick={() => returnHome()}
+                    tabIndex={-1}
+                  >
+                    Hjem
+                  </button>
+                </div>
+              ) : state.startScreen ? (
                 <button
-                  className={css.PlayAgainButton}
-                  onClick={() => {
-                    play();
-                  }}
+                  className={css.PlayButton}
+                  onClick={() => play()}
                   tabIndex={-1}
                 >
-                  Prøv igjen
+                  START
                 </button>
-                <button
-                  className={css.HomeButton}
-                  onClick={() => returnHome()}
-                  tabIndex={-1}
-                >
-                  Hjem
-                </button>
-              </div>
-            ) : state.startScreen ? (
+              ) : null}
+            </aside>
+          </section>
+          <div className={css.buttons}>
+            <span />
+            <div>
               <button
-                className={css.PlayButton}
-                onClick={() => play()}
-                tabIndex={-1}
+                disabled={state.gameOver}
+                onTouchStart={() => handleButtonPressed('down')}
+                onTouchEnd={() => handleButtonReleased('down')}
+                onContextMenu={(event) => {
+                  event.stopPropagation();
+                  event.preventDefault();
+                }}
               >
-                START
+                DOWN
               </button>
-            ) : null}
-          </aside>
-        </section>
-        <div className={css.buttons}>
-          <button
-            disabled={state.gameOver}
-            onTouchStart={(event) => handleButtonPressed('left', event)}
-            onTouchEnd={(event) => handleButtonReleased('left', event)}
-          >
-            &lt;
-          </button>
-          <div>
-            <button
-              disabled={state.gameOver}
-              onClick={() => rotatePlayer(stage, 1)}
-            >
-              ROTATE
-            </button>
-            <br />
-            <br />
-            <button
-              disabled={state.gameOver}
-              onTouchStart={(event) => handleButtonPressed('down', event)}
-              onTouchEnd={(event) => handleButtonReleased('down', event)}
-            >
-              DOWN
-            </button>
+            </div>
+            <span />
           </div>
-          <button
-            disabled={state.gameOver}
-            onTouchStart={(event) => handleButtonPressed('right', event)}
-            onTouchEnd={(event) => handleButtonReleased('right', event)}
-          >
-            &gt;
-          </button>
-        </div>
-      </section>
+        </section>
+      </Swipe>
     </>
   );
 }
