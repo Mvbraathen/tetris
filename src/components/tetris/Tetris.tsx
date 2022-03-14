@@ -65,7 +65,7 @@ export default function Tetris() {
     handleKeyReleased
   ] = useController();
 
-  const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
+  const [playHitFloorSound] = useSound('/assets/sfx/drop1.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
@@ -255,6 +255,7 @@ export default function Tetris() {
       x: touchPosition.x - position.x,
       y: touchPosition.y - position.y
     };
+
     if (Math.abs(delta.x) > BLOCK_SIZE) {
       setTouchPosition({ ...position });
       if (position.x > touchPosition.x) {
@@ -291,10 +292,6 @@ export default function Tetris() {
       return;
     }
 
-    if (Math.abs(delta.x) > 40) {
-      return;
-    }
-
     swipedDown();
   };
 
@@ -323,7 +320,6 @@ export default function Tetris() {
             <Display content={'Score: ' + score} />
             <Display content={'Rows: ' + rows} />
             <Display content={'Level: ' + level} />
-            <Display content={'Speed: ' + levelSpeed()} />
             {state.gameOver ? (
               <div className={css.ButtonPlacement}>
                 <button
