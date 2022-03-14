@@ -37,6 +37,7 @@ const initialGameState: GameState = {
 
 const LEFT = -1;
 const RIGHT = 1;
+const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
 
@@ -61,15 +62,12 @@ export default function Tetris() {
     downPressState,
     rotatePressState,
     handleKeyPressed,
-    handleKeyReleased,
-    handleButtonPressed,
-    handleButtonReleased
+    handleKeyReleased
   ] = useController();
 
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
-  //const [playDropSound] = useSound('/assets/sfx/drop1.mp3');
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
 
@@ -235,6 +233,10 @@ export default function Tetris() {
   };
 
   const swipeStart = (event: any): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
     const touch = event.changedTouches[0];
     setTouchPosition({ x: 0, y: 0 });
     setTouchStartPosition({
@@ -245,11 +247,15 @@ export default function Tetris() {
   };
 
   const swipeMove = (position: SwipePosition): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
     const delta = {
       x: touchPosition.x - position.x,
       y: touchPosition.y - position.y
     };
-    if (Math.abs(delta.x) > 32) {
+    if (Math.abs(delta.x) > BLOCK_SIZE) {
       setTouchPosition({ ...position });
       if (position.x > touchPosition.x) {
         movePlayer(RIGHT);
@@ -261,6 +267,10 @@ export default function Tetris() {
   };
 
   const swipeEnd = (event: any): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
     const touch = event.changedTouches[0];
     const delta = {
       x: touch.clientX - touchStartPosition.x,
@@ -278,6 +288,10 @@ export default function Tetris() {
     }
 
     if (delta.velocity < 0.25) {
+      return;
+    }
+
+    if (Math.abs(delta.x) > 40) {
       return;
     }
 
@@ -334,23 +348,6 @@ export default function Tetris() {
             ) : null}
           </aside>
         </section>
-        <div className={css.buttons}>
-          <span />
-          <div>
-            <button
-              disabled={state.gameOver}
-              onTouchStart={() => handleButtonPressed('down')}
-              onTouchEnd={() => handleButtonReleased('down')}
-              onContextMenu={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
-            >
-              DOWN
-            </button>
-          </div>
-          <span />
-        </div>
       </section>
     </Swipe>
   );
