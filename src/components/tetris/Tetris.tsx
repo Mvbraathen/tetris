@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import Swipe, { SwipeEvent, SwipePosition } from 'react-easy-swipe';
+import Swipe, { SwipePosition } from 'react-easy-swipe';
+// eslint-disable-next-line
 import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
@@ -41,6 +42,11 @@ const LEVEL_FACTOR = 125;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
+  const [touchStartPosition, setTouchStartPosition] = useState({
+    x: 0,
+    y: 0,
+    timeStamp: 0
+  });
   const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
@@ -63,7 +69,7 @@ export default function Tetris() {
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
-  const [playDropSound] = useSound('/assets/sfx/drop1.mp3');
+  //const [playDropSound] = useSound('/assets/sfx/drop1.mp3');
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
 
@@ -82,8 +88,7 @@ export default function Tetris() {
         return;
       }
 
-      const row = calculateLandingRow(player, stage);
-      updatePlayerPosition(player.position.x, row, true);
+      moveMaxDown();
     }
   }, [downPressState]);
 
@@ -177,6 +182,12 @@ export default function Tetris() {
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
   };
 
+  const moveMaxDown = (): void => {
+    const row = calculateLandingRow(player, stage);
+    updatePlayerPosition(player.position.x, row, true);
+    playHitFloorSound();
+  };
+
   const drop = (): void => {
     if (state.gameOver || state.startScreen) {
       return;
@@ -186,10 +197,6 @@ export default function Tetris() {
       ...player.position,
       y: player.position.y + 1
     });
-
-    if (didCollide) {
-      playHitFloorSound();
-    }
 
     updatePlayerPosition(
       player.position.x,
@@ -224,14 +231,20 @@ export default function Tetris() {
   };
 
   const swipedDown = (): void => {
-    console.log('swiped down');
+    moveMaxDown();
   };
 
-  const swipeStart = (): void => {
+  const swipeStart = (event: any): void => {
+    const touch = event.changedTouches[0];
     setTouchPosition({ x: 0, y: 0 });
+    setTouchStartPosition({
+      x: touch.clientX,
+      y: touch.clientY,
+      timeStamp: event.timeStamp
+    });
   };
 
-  const swipeMove = (position: SwipePosition, event: SwipeEvent): void => {
+  const swipeMove = (position: SwipePosition): void => {
     const delta = {
       x: touchPosition.x - position.x,
       y: touchPosition.y - position.y
@@ -245,16 +258,30 @@ export default function Tetris() {
         movePlayer(LEFT);
       }
     }
-
-    console.log(event);
-
-    if (delta.y < -50) {
-      swipedDown();
-    }
   };
 
-  const swipeEnd = (e: any): void => {
-    console.log('END', e.changedTouches[0]);
+  const swipeEnd = (event: any): void => {
+    const touch = event.changedTouches[0];
+    const delta = {
+      x: touch.clientX - touchStartPosition.x,
+      y: touch.clientY - touchStartPosition.y,
+      timeStamp: event.timeStamp - touchStartPosition.timeStamp,
+      velocity:
+        (touch.clientY - touchStartPosition.y) /
+        (event.timeStamp - touchStartPosition.timeStamp + 1)
+    };
+
+    if (delta.velocity < 0.001 && delta.timeStamp < 200) {
+      playRotateSound();
+      rotatePlayer(stage, 1);
+      return;
+    }
+
+    if (delta.velocity < 0.25) {
+      return;
+    }
+
+    swipedDown();
   };
 
   return (
