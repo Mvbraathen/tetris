@@ -56,13 +56,14 @@ export const usePlayer = (): [
   };
 
   const applyNextTetromino = (tetromino: Tetromino): void => {
-    const bb = getTetrominoBB(tetromino, player.position);
+    const bb = getTetrominoBB(tetromino, { x: 0, y: 0 });
+    const width = bb[2] - bb[0] + 1;
     const height = bb[3] - bb[1] + 1;
 
     setPlayer({
       ...player,
       position: {
-        x: STAGE_WIDTH / 2 - 2,
+        x: STAGE_WIDTH / 2 - Math.round(width / 2) - bb[0],
         y: -1 * height
       },
       tetromino,

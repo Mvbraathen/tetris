@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import Swipe from 'react-easy-swipe';
+import Swipe, { SwipePosition } from 'react-easy-swipe';
+// eslint-disable-next-line
+import useSound from 'use-sound';
 
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
@@ -35,12 +37,18 @@ const initialGameState: GameState = {
 
 const LEFT = -1;
 const RIGHT = 1;
+const BLOCK_SIZE = 32;
 const SPEED_FACTOR = 450;
 const LEVEL_FACTOR = 125;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
-  const [touchPosition, setTouchPosition] = useState(0);
+  const [touchStartPosition, setTouchStartPosition] = useState({
+    x: 0,
+    y: 0,
+    timeStamp: 0
+  });
+  const [touchPosition, setTouchPosition] = useState({ x: 0, y: 0 });
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
@@ -54,10 +62,14 @@ export default function Tetris() {
     downPressState,
     rotatePressState,
     handleKeyPressed,
-    handleKeyReleased,
-    handleButtonPressed,
-    handleButtonReleased
+    handleKeyReleased
   ] = useController();
+
+  const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
+  const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
+  const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
+  const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
+  const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
 
   const levelSpeed = (): number => {
     return SPEED_FACTOR / level + LEVEL_FACTOR;
@@ -74,13 +86,13 @@ export default function Tetris() {
         return;
       }
 
-      const row = calculateLandingRow(player, stage);
-      updatePlayerPosition(player.position.x, row, true);
+      moveMaxDown();
     }
   }, [downPressState]);
 
   useEffect(() => {
     if (rotatePressState) {
+      playRotateSound();
       rotatePlayer(stage, 1);
     }
   }, [rotatePressState]);
@@ -102,6 +114,7 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
+        playYouLose();
         return;
       } else {
         generateNextTetromino();
@@ -116,6 +129,12 @@ export default function Tetris() {
   useEffect(() => {
     setDropSpeed(levelSpeed);
   }, [level]);
+
+  useEffect(() => {
+    if (rowsCleared > 0) {
+      playRemoveLine();
+    }
+  }, [rowsCleared]);
 
   useInterval(() => {
     if (!state.gameOver || !player.collided) {
@@ -145,6 +164,7 @@ export default function Tetris() {
         x: player.position.x + dir
       })
     ) {
+      playHitWallSound();
       return;
     }
 
@@ -158,6 +178,12 @@ export default function Tetris() {
     }
 
     updatePlayerPosition(player.position.x + dir, player.position.y, false);
+  };
+
+  const moveMaxDown = (): void => {
+    const row = calculateLandingRow(player, stage);
+    updatePlayerPosition(player.position.x, row, true);
+    playHitFloorSound();
   };
 
   const drop = (): void => {
@@ -203,30 +229,80 @@ export default function Tetris() {
   };
 
   const swipedDown = (): void => {
-    console.log('swiped down');
+    moveMaxDown();
   };
 
-  const swipeStart = (): void => {
-    setTouchPosition(0);
+  const swipeStart = (event: any): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    setTouchPosition({ x: 0, y: 0 });
+    setTouchStartPosition({
+      x: touch.clientX,
+      y: touch.clientY,
+      timeStamp: event.timeStamp
+    });
   };
 
-  const swipeMove = (e: any): void => {
-    if (Math.abs(touchPosition - e.x) > 32) {
-      setTouchPosition(e.x);
-      if (e.x > touchPosition) {
+  const swipeMove = (position: SwipePosition): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
+    const delta = {
+      x: touchPosition.x - position.x,
+      y: touchPosition.y - position.y
+    };
+    if (Math.abs(delta.x) > BLOCK_SIZE) {
+      setTouchPosition({ ...position });
+      if (position.x > touchPosition.x) {
         movePlayer(RIGHT);
       }
-      if (e.x < touchPosition) {
+      if (position.x < touchPosition.x) {
         movePlayer(LEFT);
       }
     }
   };
 
+  const swipeEnd = (event: any): void => {
+    if (state.gameOver || state.startScreen) {
+      return;
+    }
+
+    const touch = event.changedTouches[0];
+    const delta = {
+      x: touch.clientX - touchStartPosition.x,
+      y: touch.clientY - touchStartPosition.y,
+      timeStamp: event.timeStamp - touchStartPosition.timeStamp,
+      velocity:
+        (touch.clientY - touchStartPosition.y) /
+        (event.timeStamp - touchStartPosition.timeStamp + 1)
+    };
+
+    if (delta.velocity < 0.001 && delta.timeStamp < 200) {
+      playRotateSound();
+      rotatePlayer(stage, 1);
+      return;
+    }
+
+    if (delta.velocity < 0.25) {
+      return;
+    }
+
+    if (Math.abs(delta.x) > 40) {
+      return;
+    }
+
+    swipedDown();
+  };
+
   return (
     <Swipe
-      onSwipeDown={swipedDown}
       onSwipeStart={swipeStart}
       onSwipeMove={swipeMove}
+      onSwipeEnd={swipeEnd}
     >
       <section
         className={css.Tetris}
@@ -239,7 +315,7 @@ export default function Tetris() {
         }}
       >
         <section>
-          <Stage stage={stage} onClick={() => rotatePlayer(stage, 1)} />
+          <Stage stage={stage} />
           <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
           <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
           <aside>
@@ -247,53 +323,31 @@ export default function Tetris() {
             <Display content={'Score: ' + score} />
             <Display content={'Rows: ' + rows} />
             <Display content={'Level: ' + level} />
+            <Display content={'Speed: ' + levelSpeed()} />
             {state.gameOver ? (
               <div className={css.ButtonPlacement}>
                 <button
                   className={css.PlayAgainButton}
-                  onClick={() => {
-                    play();
-                  }}
+                  onClick={play}
                   tabIndex={-1}
                 >
                   Try again
                 </button>
                 <button
                   className={css.HomeButton}
-                  onClick={() => returnHome()}
+                  onClick={returnHome}
                   tabIndex={-1}
                 >
                   Home
                 </button>
               </div>
             ) : state.startScreen ? (
-              <button
-                className={css.PlayButton}
-                onClick={() => play()}
-                tabIndex={-1}
-              >
+              <button className={css.PlayButton} onClick={play} tabIndex={-1}>
                 PLAY
               </button>
             ) : null}
           </aside>
         </section>
-        <div className={css.buttons}>
-          <span />
-          <div>
-            <button
-              disabled={state.gameOver}
-              onTouchStart={() => handleButtonPressed('down')}
-              onTouchEnd={() => handleButtonReleased('down')}
-              onContextMenu={(event) => {
-                event.stopPropagation();
-                event.preventDefault();
-              }}
-            >
-              DOWN
-            </button>
-          </div>
-          <span />
-        </div>
       </section>
     </Swipe>
   );
