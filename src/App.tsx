@@ -8,7 +8,7 @@ export default function App() {
     <div>
       <TetrisHeader
         style={{
-          display: 'flex',
+          display: 'block',
           width: '20rem',
           margin: 'auto'
         }}

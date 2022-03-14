@@ -41,27 +41,28 @@ export const detectCollision = (
   stage: GameBoard,
   position: Position
 ): boolean => {
-  const bb = getTetrominoBB(player.tetromino, position);
-  if (bb[3] < 0) {
+  const bb = getTetrominoBB(player.tetromino, { x: 0, y: 0 });
+  if (position.y + bb[3] < 0) {
     return false;
   }
 
-  for (let y = 0; y < player.tetromino.shape.length; y++) {
-    if (position.y + y < 0) {
+  for (let y = bb[1]; y <= bb[3]; y++) {
+    const yPos = position.y + y - bb[1];
+    if (yPos < 0) {
       continue;
     }
 
-    for (let x = 0; x < player.tetromino.shape[0].length; x++) {
+    for (let x = bb[0]; x <= bb[2]; x++) {
       const pixel = player.tetromino.shape[y][x];
       if (!pixel) {
         continue;
       }
 
-      if (bb[0] < 0 || bb[2] > STAGE_WIDTH) {
+      if (position.x + bb[0] < 0 || position.x + bb[2] > STAGE_WIDTH) {
         return true;
       }
 
-      if (bb[3] >= STAGE_HEIGHT) {
+      if (yPos >= STAGE_HEIGHT) {
         return true;
       }
 
@@ -74,7 +75,7 @@ export const detectCollision = (
         return true;
       }
 
-      if (stage.rows[position.y + y].cells[position.x + x].locked) {
+      if (stage.rows[yPos].cells[position.x + x].locked) {
         return true;
       }
     }
@@ -112,4 +113,50 @@ export const getTetrominoBB = (
   }
 
   return [left, top, right, bottom];
+};
+
+export const calculateLandingRow = (
+  player: Player,
+  stage: GameBoard
+): number => {
+  const bb = getTetrominoBB(player.tetromino, { x: 0, y: 0 });
+  const height = bb[3] - bb[1] + 1;
+
+  let landingAt = stage.rows.length - height;
+  let collision = false;
+  for (
+    let ry = player.position.y + bb[1];
+    ry <= stage.rows.length - height;
+    ry++
+  ) {
+    for (let y = 0; y <= bb[3]; y++) {
+      const examineY = ry + y;
+      for (let x = bb[0]; x <= bb[2]; x++) {
+        const pixel = player.tetromino.shape[y][x];
+        if (!pixel) {
+          continue;
+        }
+
+        if (examineY < 0 || examineY >= stage.rows.length) {
+          continue;
+        }
+
+        if (stage.rows[examineY].cells[player.position.x + x].locked) {
+          collision = true;
+          landingAt = ry - 1 + bb[1];
+          break;
+        }
+      }
+
+      if (collision) {
+        break;
+      }
+    }
+
+    if (collision) {
+      break;
+    }
+  }
+
+  return landingAt;
 };
