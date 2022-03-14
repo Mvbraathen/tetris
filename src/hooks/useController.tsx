@@ -8,9 +8,7 @@ export const useController = (): [
   moveDown: boolean,
   rotatePressed: boolean,
   handleKeyPressed: (event: { key: string }, state: GameState) => void,
-  handleKeyReleased: (event: { key: string }, state: GameState) => void,
-  handleButtonPressed: (key: string) => void,
-  handleButtonReleased: (key: string) => void
+  handleKeyReleased: (event: { key: string }, state: GameState) => void
 ] => {
   const [leftPressState, setLeftPressState] = useState(false);
   const [downPressState, setDownPressState] = useState(false);
@@ -74,46 +72,12 @@ export const useController = (): [
     }
   };
 
-  const handleButtonPressed = (key: string): void => {
-    switch (key) {
-      case 'left':
-        setLeftPressState(true);
-        break;
-
-      case 'right':
-        setRightPressState(true);
-        break;
-
-      case 'down':
-        setDownPressState(true);
-        break;
-    }
-  };
-
-  const handleButtonReleased = (key: string): void => {
-    switch (key) {
-      case 'left':
-        setLeftPressState(false);
-        break;
-
-      case 'right':
-        setRightPressState(false);
-        break;
-
-      case 'down':
-        setDownPressState(false);
-        break;
-    }
-  };
-
   return [
     leftPressState,
     rightPressState,
     downPressState,
     rotatePressState,
     handleKeyPressed,
-    handleKeyReleased,
-    handleButtonPressed,
-    handleButtonReleased
+    handleKeyReleased
   ];
 };
