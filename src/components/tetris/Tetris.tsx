@@ -66,9 +66,13 @@ export default function Tetris() {
     handleKeyReleased
   ] = useController();
 
-  const [playHitFloorSound] = useSound('/assets/sfx/drop1.mp3');
+  const [playMoveBlockSound] = useSound('/assets/sfx/click.mp3');
+  const [playDropDownSound] = useSound('/assets/sfx/drop1.mp3');
+  const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
-  const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
+  const [playRotateSound] = useSound('/assets/sfx/rotate.mp3', {
+    volume: 0.4
+  });
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
 
@@ -118,10 +122,17 @@ export default function Tetris() {
         playYouLose();
         return;
       } else {
+        playHitFloorSound();
         generateNextTetromino();
       }
     }
   }, [player.collided]);
+
+  useEffect(() => {
+    if (player.position.y + player.tetromino.shape.length - 1 > 0) {
+      playMoveBlockSound();
+    }
+  }, [player.position.x]);
 
   useEffect(() => {
     applyNextTetromino(tetrominos[0]);
@@ -184,7 +195,7 @@ export default function Tetris() {
   const moveMaxDown = (): void => {
     const row = calculateLandingRow(player, stage);
     updatePlayerPosition(player.position.x, row, true);
-    playHitFloorSound();
+    playDropDownSound();
   };
 
   const drop = (): void => {
