@@ -17,19 +17,19 @@ const StartScreen = (props: StartScreenProps) => {
 
   return (
     <div className={css.StartScreen}>
-      <h1 className={css.StartSreenHeader}>Welcome!</h1>
+      <h1 className={css.StartSreenHeader}>Velkommen!</h1>
       <p className={css.StartScreenInformation}>
-        1: Use the arrow keys to move the tetromino.
+        1: Bruk piltastene for å bevege tetrominoen.
       </p>
       <p className={css.StartScreenInformation}>
-        2: Press play or space to start the game.
+        2: Trykk start eller space for å starte spillet.
       </p>
-      <p className={css.StartScreenInformation}>3: Good luck, and have fun!</p>
+      <p className={css.StartScreenInformation}>3: Lykke til!</p>
       <Lottie
         animationData={animationData}
         autoPlay
         loop
-        style={{ height: '184px' }}
+        className={css.LottieStartScreenStyle}
       />
     </div>
   );

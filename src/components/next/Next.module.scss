@@ -1,17 +1,17 @@
 .Next {
-  border: #333 inset;
-  border-radius: 0.5rem;
-  border-bottom-color: #cccccc;
-  border-right-color: #cccccc;
-  padding: 1rem;
+  border-radius: 0 0.5rem 0.5rem;
+  padding: 0.3rem;
+  margin-top: -0.5rem;
   box-sizing: border-box;
-  background: #444444;
-  text-align: center;
+  background: #f2f5f7;
+  font-size: large;
+  height: 6rem;
+  width: 6rem;
 
   .tetromino {
     display: grid;
     width: 3rem;
-    margin: 1rem auto;
+    margin: 0.3rem auto;
     grid-template-rows: 1rem 1rem 1rem 1rem;
 
     .row {

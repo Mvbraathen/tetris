@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import Swipe, { SwipePosition } from 'react-easy-swipe';
-// eslint-disable-next-line
 import useSound from 'use-sound';
 
+import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
+import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
@@ -296,55 +297,78 @@ export default function Tetris() {
   };
 
   return (
-    <Swipe
-      onSwipeStart={swipeStart}
-      onSwipeMove={swipeMove}
-      onSwipeEnd={swipeEnd}
-    >
-      <section
-        className={css.Tetris}
-        onKeyDown={(event) => handleKeyPressed(event, state)}
-        onKeyUp={(event) => handleKeyReleased(event, state)}
-        tabIndex={0}
-        onContextMenu={(event) => {
-          event.stopPropagation();
-          event.preventDefault();
-        }}
+    <>
+      <div className={css.alignTop}>
+        <div>
+          <Display
+            content={'Rader: ' + rows}
+            style={{ backgroundColor: '#29cff5' }}
+          />
+          <Display
+            content={'Nivå: ' + level}
+            style={{ backgroundColor: '#49bca1' }}
+          />
+        </div>
+        <ComputasLogo className={css.ComputasLogo} />
+        <div>
+          <Display
+            content={'Hastighet: ' + levelSpeed()}
+            style={{ backgroundColor: '#ff5f63' }}
+          />
+          <Display
+            content={'Poeng: ' + score}
+            style={{ backgroundColor: '#fed546' }}
+          />
+        </div>
+      </div>
+      <Swipe
+        onSwipeStart={swipeStart}
+        onSwipeMove={swipeMove}
+        onSwipeEnd={swipeEnd}
       >
-        <section>
-          <Stage stage={stage} />
-          <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-          <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
-          <aside>
+        <section
+          className={css.Tetris}
+          onKeyDown={(event) => handleKeyPressed(event, state)}
+          onKeyUp={(event) => handleKeyReleased(event, state)}
+          tabIndex={0}
+          onContextMenu={(event) => {
+            event.stopPropagation();
+            event.preventDefault();
+          }}
+        >
+          <section>
+            <Stage stage={stage} />
+            <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
+            <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
             <Next tetromino={tetrominos[1]} />
-            <Display content={'Score: ' + score} />
-            <Display content={'Rows: ' + rows} />
-            <Display content={'Level: ' + level} />
-            {state.gameOver ? (
-              <div className={css.ButtonPlacement}>
-                <button
-                  className={css.PlayAgainButton}
-                  onClick={play}
-                  tabIndex={-1}
-                >
-                  Try again
+            <aside>
+              <TetrisVertical className={css.VerticalTetrisLogo} />
+              {state.gameOver ? (
+                <div className={css.buttonPlacement}>
+                  <button
+                    className={css.PlayAgainButton}
+                    onClick={play}
+                    tabIndex={-1}
+                  >
+                    Spill igjen
+                  </button>
+                  <button
+                    className={css.HomeButton}
+                    onClick={returnHome}
+                    tabIndex={-1}
+                  >
+                    Hjem
+                  </button>
+                </div>
+              ) : state.startScreen ? (
+                <button className={css.PlayButton} onClick={play} tabIndex={-1}>
+                  Spill
                 </button>
-                <button
-                  className={css.HomeButton}
-                  onClick={returnHome}
-                  tabIndex={-1}
-                >
-                  Home
-                </button>
-              </div>
-            ) : state.startScreen ? (
-              <button className={css.PlayButton} onClick={play} tabIndex={-1}>
-                PLAY
-              </button>
-            ) : null}
-          </aside>
+              ) : null}
+            </aside>
+          </section>
         </section>
-      </section>
-    </Swipe>
+      </Swipe>
+    </>
   );
 }

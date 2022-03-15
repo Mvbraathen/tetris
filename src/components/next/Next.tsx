@@ -45,7 +45,7 @@ const Next = (props: NextProps): ReactElement => {
 
   return (
     <div className={css.Next}>
-      <span>NEXT</span>
+      <span>Neste:</span>
       {renderTetromino()}
     </div>
   );
