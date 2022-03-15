@@ -1,7 +1,5 @@
 import React from 'react';
-import Lottie from 'lottie-react';
 
-import animationData from '../../lotties/hiro-hiding.json';
 import css from './StartScreen.module.scss';
 
 interface StartScreenProps {
@@ -17,20 +15,13 @@ const StartScreen = (props: StartScreenProps) => {
 
   return (
     <div className={css.StartScreen}>
-      <h1 className={css.StartSreenHeader}>Velkommen!</h1>
-      <p className={css.StartScreenInformation}>
-        1: Bruk piltastene for å bevege tetrominoen.
-      </p>
-      <p className={css.StartScreenInformation}>
-        2: Trykk start eller space for å starte spillet.
-      </p>
-      <p className={css.StartScreenInformation}>3: Lykke til!</p>
-      <Lottie
-        animationData={animationData}
-        autoPlay
-        loop
-        className={css.LottieStartScreenStyle}
-      />
+      <div className={css.InformationBox}>
+        <div className={css.informationBoxText}>
+          Swipe i retningen du ønsker at klossene skal bevege seg.
+        </div>
+        <br />
+        <div className={css.informationBoxText}>Tæpp for å rotere.</div>
+      </div>
     </div>
   );
 };
