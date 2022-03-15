@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swipe, { SwipePosition } from 'react-easy-swipe';
+// eslint-disable-next-line
 import useSound from 'use-sound';
 
 import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
