@@ -67,7 +67,7 @@ export default function Tetris() {
     handleKeyReleased
   ] = useController();
 
-  const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
+  const [playHitFloorSound] = useSound('/assets/sfx/drop1.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
   const [playRotateSound] = useSound('/assets/sfx/rotate.mp3');
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
@@ -257,6 +257,7 @@ export default function Tetris() {
       x: touchPosition.x - position.x,
       y: touchPosition.y - position.y
     };
+
     if (Math.abs(delta.x) > BLOCK_SIZE) {
       setTouchPosition({ ...position });
       if (position.x > touchPosition.x) {
@@ -290,10 +291,6 @@ export default function Tetris() {
     }
 
     if (delta.velocity < 0.25) {
-      return;
-    }
-
-    if (Math.abs(delta.x) > 40) {
       return;
     }
 
