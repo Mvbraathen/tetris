@@ -46,6 +46,10 @@ export const detectCollision = (
     return false;
   }
 
+  if (position.x + bb[0] < 0 || position.x + bb[2] > STAGE_WIDTH) {
+    return true;
+  }
+
   for (let y = bb[1]; y <= bb[3]; y++) {
     const yPos = position.y + y - bb[1];
     if (yPos < 0) {
@@ -56,10 +60,6 @@ export const detectCollision = (
       const pixel = player.tetromino.shape[y][x];
       if (!pixel) {
         continue;
-      }
-
-      if (position.x + bb[0] < 0 || position.x + bb[2] > STAGE_WIDTH) {
-        return true;
       }
 
       if (yPos >= STAGE_HEIGHT) {

@@ -23,7 +23,7 @@ export const useGameStatus = (
       setScore(score + pointsTable[rowsCleared] * level);
 
       if (rows + rowsCleared >= level * LEVEL_INCREASE_COUNT) {
-        increaseLevel();
+        setLevel(1 + Math.ceil((rows + rowsCleared) / LEVEL_INCREASE_COUNT));
       }
     }
   }, [rowsCleared]);
@@ -32,10 +32,6 @@ export const useGameStatus = (
     setScore(0);
     setRows(0);
     setLevel(1);
-  };
-
-  const increaseLevel = (): void => {
-    setLevel(level + 1);
   };
 
   const generateNextTetromino = (): void => {
