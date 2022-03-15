@@ -302,8 +302,8 @@ export default function Tetris() {
 
   return (
     <>
-      <div className={css.TopPlacement}>
-        <div className={css.DisplayGrid}>
+      <div className={css.alignTop}>
+        <div>
           <Display
             content={'Rader: ' + rows}
             style={{ backgroundColor: '#29cff5' }}
@@ -314,7 +314,7 @@ export default function Tetris() {
           />
         </div>
         <ComputasLogo className={css.ComputasLogo} />
-        <div className={css.DisplayGrid}>
+        <div>
           <Display
             content={'Hastighet: ' + levelSpeed()}
             style={{ backgroundColor: '#ff5f63' }}
@@ -348,7 +348,7 @@ export default function Tetris() {
             <aside>
               <TetrisVertical className={css.VerticalTetrisLogo} />
               {state.gameOver ? (
-                <div className={css.ButtonPlacement}>
+                <div className={css.buttonPlacement}>
                   <button
                     className={css.PlayAgainButton}
                     onClick={play}

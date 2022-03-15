@@ -59,7 +59,7 @@
     background-color: #29cff5;
   }
 
-  .ButtonPlacement {
+  .buttonPlacement {
     display: grid;
     gap: 0.25rem;
     margin-bottom: -1rem;
@@ -95,7 +95,7 @@
   }
 }
 
-.TopPlacement {
+.alignTop {
   display: flex;
   justify-content: center;
   margin: 1rem 3rem 1rem 1rem;
@@ -105,10 +105,6 @@
 .VerticalTetrisLogo {
   width: 4.3rem;
   margin: 6rem auto auto;
-}
-
-.DisplayGrid {
-  display: grid;
 }
 
 .ComputasLogo {
