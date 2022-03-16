@@ -16,7 +16,7 @@ interface HighScores {
 
 const GameOver = (props: GameOverProps) => {
   const { gameOver, score, restart } = props;
-  const [text, setText] = useState(<span>GAME OVER</span>);
+  const [showScores, setShowScores] = useState(false);
   const [currentRank, setCurrentRank] = useState(1);
 
   const currentHighScores = JSON.parse(
@@ -27,13 +27,6 @@ const GameOver = (props: GameOverProps) => {
     restart();
   };
 
-  const highScore = (
-    <ScorePage
-      score={score}
-      rank={`${currentRank}/${currentHighScores.length}`}
-      showHighScores={showHighScores}
-    />
-  );
   useEffect(() => {
     if (gameOver) {
       if (currentHighScores.length === 0) {
@@ -49,9 +42,9 @@ const GameOver = (props: GameOverProps) => {
           currentHighScores.findIndex((item) => item.score <= score) + 1
         );
       }
-      setText(<span>GAME OVER</span>);
+      setShowScores(false);
       setTimeout(() => {
-        setText(highScore);
+        setShowScores(true);
       }, 2000);
     }
   }, [gameOver]);
@@ -60,7 +53,19 @@ const GameOver = (props: GameOverProps) => {
     return null;
   }
 
-  return <div className={css.GameOver}>{text}</div>;
+  return showScores ? (
+    <div className={css.GameOver}>
+      <ScorePage
+        score={score}
+        rank={`${currentRank}/${currentHighScores.length + 1}`}
+        showHighScores={showHighScores}
+      />
+    </div>
+  ) : (
+    <div className={css.GameOver}>
+      <span>GAME OVER</span>
+    </div>
+  );
 };
 
 export default GameOver;

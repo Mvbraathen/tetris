@@ -18,64 +18,87 @@ interface ScorePageProps {
 
 const ScorePage = (props: ScorePageProps) => {
   const { score, rank, showHighScores } = props;
+  const [showHigh, setShowHigh] = useState(true);
+
+  useEffect(() => {
+    console.log('useEffect highscore', rank);
+    if (rank.split('/')[0] === '1') {
+      console.log('isrank1');
+      setShowHigh(true);
+      setTimeout(() => {
+        setShowHigh(false);
+      }, 5000);
+    } else {
+      setShowHigh(false);
+    }
+  }, [rank]);
 
   return (
-    <div className={css.ScorePage}>
-      <div className={css.Column}>
-        <div className={css.Tetromino}>
-          <Block4 />
+    <>
+      <div className={css.ScorePage}>
+        <div className={css.Column}>
+          <div className={css.Tetromino}>
+            <Block4 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block0 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block5 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block1 />
+          </div>
         </div>
-        <div className={css.Tetromino}>
-          <Block0 />
+        <div className={css.Column}>
+          <ComputasLogo
+            style={{
+              width: '15rem',
+              height: '15rem',
+              padding: '3rem'
+            }}
+          />
+          <div className={css.ScorePageScore}>
+            <span>
+              Poengsum: <br />
+              {score}
+            </span>
+          </div>
+          <div className={css.ScorePageRank}>
+            <span>Plassering: {rank}</span>
+          </div>
+          <div className={css.ScorePageButton}>
+            <button onClick={() => showHighScores()}>
+              <span className={css.ButtonText}>Toppliste</span>
+            </button>
+          </div>
+          <div className={css.Tetromino}>
+            <Block6 />
+          </div>
         </div>
-        <div className={css.Tetromino}>
-          <Block5 />
-        </div>
-        <div className={css.Tetromino}>
-          <Block1 />
+        <div className={css.Column}>
+          <div className={css.Tetromino}>
+            <Block3 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block5 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block0 />
+          </div>
+          <div className={css.Tetromino}>
+            <Block2 />
+          </div>
         </div>
       </div>
-      <div className={css.Column}>
-        <ComputasLogo
-          style={{
-            width: '210px',
-            height: '210px',
-            padding: '3rem'
-          }}
-        />
-        <div className={css.ScorePageScore}>
-          <span>
-            Poengsum: <br />
-            {score}
-          </span>
+      {showHigh ? (
+        <div className={css.TopScoreOverlay}>
+          <div className={css.TopScoreOverlayBox}>
+            <span>NY BESTE PLASSERING!</span>
+          </div>
         </div>
-        <div className={css.ScorePageRank}>
-          <span>Plassering: {rank}</span>
-        </div>
-        <div className={css.ScorePageButton}>
-          <button onClick={() => showHighScores()}>
-            <span className={css.ButtonText}>Toppliste</span>
-          </button>
-        </div>
-        <div className={css.Tetromino}>
-          <Block6 />
-        </div>
-      </div>
-      <div className={css.Column}>
-        <div className={css.Tetromino}>
-          <Block3 />
-        </div>
-        <div className={css.Tetromino}>
-          <Block5 />
-        </div>
-        <div className={css.Tetromino}>
-          <Block0 />
-        </div>
-        <div className={css.Tetromino}>
-          <Block2 />
-        </div>
-      </div>
-    </div>
+      ) : null}
+    </>
   );
 };
 
