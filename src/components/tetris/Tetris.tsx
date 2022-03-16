@@ -67,7 +67,7 @@ export default function Tetris() {
     handleKeyReleased
   ] = useController();
 
-  const [playMoveBlockSound] = useSound('/assets/sfx/click.mp3');
+  const [playMoveBlockSound] = useSound('/assets/sfx/suction-plop1.mp3');
   const [playDropDownSound] = useSound('/assets/sfx/drop1.mp3');
   const [playHitFloorSound] = useSound('/assets/sfx/hit-floor.mp3');
   const [playHitWallSound] = useSound('/assets/sfx/hit-wall.mp3');
