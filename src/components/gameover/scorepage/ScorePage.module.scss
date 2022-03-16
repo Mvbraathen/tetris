@@ -1,9 +1,10 @@
 .ScorePage {
   position: absolute;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
+  top: 0;
+  left: 0;
+  display: grid;
+  grid-template-columns: 25% 50% 25%;
+  justify-items: center;
   width: 100%;
   height: 100%;
   background-color: #003459;
@@ -24,4 +25,31 @@
   font-size: 2rem;
   font-weight: 700;
   padding-bottom: 3rem;
+}
+
+.ScorePageButton {
+  button {
+    background-color: #FED546;
+    border: none;
+    border-radius: 5px;
+    // height: 2rem;
+    padding: 1rem;
+  }
+  padding-bottom: 3rem;
+}
+.Tetromino {
+  padding: 2.6rem;
+}
+.ButtonText {
+  padding: 1rem;
+  color: #003459;
+  font-family: 'Open Sans', sans-serif;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.Column {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }

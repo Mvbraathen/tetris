@@ -6,6 +6,7 @@ import ScorePage from './scorepage/ScorePage';
 interface GameOverProps {
   gameOver: boolean;
   score: number;
+  restart: () => void;
 }
 
 interface HighScores {
@@ -14,7 +15,7 @@ interface HighScores {
 }
 
 const GameOver = (props: GameOverProps) => {
-  const { gameOver, score } = props;
+  const { gameOver, score, restart } = props;
   const [text, setText] = useState(<span>GAME OVER</span>);
   const [currentRank, setCurrentRank] = useState(1);
 
@@ -22,10 +23,15 @@ const GameOver = (props: GameOverProps) => {
     localStorage.getItem('highScores') ?? '[]'
   ) as HighScores[];
 
+  const showHighScores = () => {
+    restart();
+  };
+
   const highScore = (
     <ScorePage
       score={score}
       rank={`${currentRank}/${currentHighScores.length}`}
+      showHighScores={showHighScores}
     />
   );
   useEffect(() => {
