@@ -96,11 +96,12 @@
 }
 
 .alignTop {
-  display: flex;
+  display: grid;
   justify-content: center;
-  align-items: center;
-  margin: 1rem 3rem 1rem 1rem;
-  gap: 2.5rem;
+  grid-auto-flow: column;
+  padding: 1rem;
+  column-gap: 2.5rem;
+  margin-right: 2rem;
 }
 
 .VerticalTetrisLogo {
