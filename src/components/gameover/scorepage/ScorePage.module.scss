@@ -13,17 +13,20 @@
 
 .ScorePageScore {
   color: #FED546;
-  font-family: 'Open Sans', sans-serif;
   font-size: 3rem;
-  font-weight: 700;
   padding-bottom: 3rem;
 }
 
 .ScorePageRank {
   color: var(--color-secondary);
-  font-family: 'Open Sans', sans-serif;
   font-size: 2rem;
-  font-weight: 700;
+  padding-bottom: 3rem;
+}
+.ScorePageDescription {
+  color: #fff;
+  width: 15rem;
+  margin: 0 auto;
+  font-size: 2rem;
   padding-bottom: 3rem;
 }
 
@@ -32,6 +35,7 @@
     background-color: #FED546;
     border: none;
     border-radius: 5px;
+    font-weight: 700;
     padding: 1rem;
     cursor: pointer;
   }
@@ -43,9 +47,7 @@
 .ButtonText {
   padding: 1rem;
   color: #003459;
-  font-family: 'Open Sans', sans-serif;
   font-size: 2rem;
-  font-weight: 700;
 }
 
 .Column {
@@ -77,13 +79,14 @@
   filter: drop-shadow(0px 0px 24px #29cff5);
   border: #FED546 solid 4px;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   padding: 2rem;
+}
+
+.TopScoreOverlayText {
   color: #FED546;
-  font-family: 'Open Sans', sans-serif;
-  font-size: 3rem;
-  font-weight: 700;
+  line-height: 5rem;
+  font-size: 3.5rem;
   text-shadow: 0px 10px 10px rgba(0, 0, 0, 0.25);
 }

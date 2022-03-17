@@ -21,15 +21,13 @@ const ScorePage = (props: ScorePageProps) => {
   const [showHigh, setShowHigh] = useState(true);
 
   useEffect(() => {
-    console.log('useEffect highscore', rank);
     if (rank.split('/')[0] === '1') {
-      console.log('isrank1');
       setShowHigh(true);
       setTimeout(() => {
         setShowHigh(false);
       }, 5000);
     } else {
-      setShowHigh(false);
+      setShowHigh(true);
     }
   }, [rank]);
 
@@ -67,9 +65,12 @@ const ScorePage = (props: ScorePageProps) => {
           <div className={css.ScorePageRank}>
             <span>Plassering: {rank}</span>
           </div>
+          <div className={css.ScorePageDescription}>
+            Bli med i konkurransen og vinn premie!
+          </div>
           <div className={css.ScorePageButton}>
             <button onClick={() => showHighScores()}>
-              <span className={css.ButtonText}>Toppliste</span>
+              <span className={css.ButtonText}>VI VIL VINNE!</span>
             </button>
           </div>
           <div className={css.Tetromino}>
@@ -94,7 +95,9 @@ const ScorePage = (props: ScorePageProps) => {
       {showHigh ? (
         <div className={css.TopScoreOverlay}>
           <div className={css.TopScoreOverlayBox}>
-            <span>NY BESTE PLASSERING!</span>
+            <span className={css.TopScoreOverlayText}>
+              NY BESTE PLASSERING!
+            </span>
           </div>
         </div>
       ) : null}
