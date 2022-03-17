@@ -3,20 +3,20 @@ import Swipe, { SwipePosition } from 'react-easy-swipe';
 // eslint-disable-next-line
 import useSound from 'use-sound';
 
-import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
-import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
-import GameOver from '../gameover/GameOver';
-import StartScreen from '../startscreen/StartScreen';
+import GameOver from 'components/gameover/GameOver';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
+import StartScreen from 'components/startscreen/StartScreen';
 import {
   calculateLandingRow,
   canMove,
   createStage,
   detectCollision
 } from 'helpers';
+import { ReactComponent as ComputasLogo } from '../../svg/computas.svg';
+import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import {
   useController,
   useGameStatus,
@@ -54,8 +54,16 @@ export default function Tetris() {
   const [player, updatePlayerPosition, rotatePlayer, applyNextTetromino] =
     usePlayer();
   const [stage, setStage, rowsCleared] = useStage(player);
-  const [score, rows, level, tetrominos, resetGame, generateNextTetromino] =
-    useGameStatus(rowsCleared);
+  const [
+    score,
+    highScore,
+    rows,
+    level,
+    newHighScore,
+    tetrominos,
+    resetGame,
+    generateNextTetromino
+  ] = useGameStatus(rowsCleared);
   const [dropSpeed, setDropSpeed] = useState(1100);
   const [gamesPlayed, setGamesPlayed] = useState(0);
   const [
@@ -64,7 +72,8 @@ export default function Tetris() {
     downPressState,
     rotatePressState,
     handleKeyPressed,
-    handleKeyReleased
+    handleKeyReleased,
+    setMoveComplete
   ] = useController();
 
   const [playMoveBlockSound] = useSound('/assets/sfx/suction-plop1.mp3');
@@ -76,6 +85,7 @@ export default function Tetris() {
   });
   const [playRemoveLine] = useSound('/assets/sfx/remove1.mp3');
   const [playYouLose] = useSound('/assets/sfx/you-lose.mp3');
+  const [playYouWin] = useSound('/assets/sfx/you-win.mp3');
 
   const levelSpeed = (): number => {
     return SPEED_FACTOR / level + LEVEL_FACTOR;
@@ -106,13 +116,19 @@ export default function Tetris() {
   useEffect(() => {
     if (leftPressState) {
       movePlayer(LEFT);
+      setMoveComplete();
     }
     if (rightPressState) {
       movePlayer(RIGHT);
+      setMoveComplete();
     }
   }, [leftPressState, rightPressState]);
 
   useEffect(() => {
+    if (state.startScreen) {
+      return;
+    }
+
     if (player.collided) {
       if (player.position.y < 0) {
         setState({
@@ -120,7 +136,11 @@ export default function Tetris() {
           gameOver: true,
           startScreen: false
         });
-        playYouLose();
+        if (newHighScore) {
+          playYouWin();
+        } else {
+          playYouLose();
+        }
         return;
       } else {
         playHitFloorSound();
@@ -155,7 +175,7 @@ export default function Tetris() {
     }
   }, dropSpeed);
 
-  useInterval(() => {
+  /*  useInterval(() => {
     if (!state.gameOver) {
       if (leftPressState) {
         movePlayer(LEFT);
@@ -165,6 +185,7 @@ export default function Tetris() {
       }
     }
   }, 130);
+*/
 
   const movePlayer = (dir: number): void => {
     if (state.gameOver) {
@@ -324,7 +345,7 @@ export default function Tetris() {
         <ComputasLogo className={css.ComputasLogo} />
         <div>
           <Display
-            content={'Hastighet: ' + levelSpeed()}
+            content={'Høyeste poeng: ' + highScore}
             style={{ backgroundColor: '#ff5f63' }}
           />
           <Display

@@ -11,16 +11,33 @@ const initialTetrominosList: Tetromino[] = [
 
 export const useGameStatus = (
   rowsCleared: number
-): [number, number, number, Tetromino[], () => void, () => void] => {
+): [
+  number,
+  number,
+  number,
+  number,
+  boolean,
+  Tetromino[],
+  () => void,
+  () => void
+] => {
   const [score, setScore] = useState(0);
+  const [highScore, setHighScore] = useState(0);
+  const [newHighScore, setNewHighScore] = useState(false);
   const [rows, setRows] = useState(0);
   const [level, setLevel] = useState(1);
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
 
   useEffect(() => {
     if (rowsCleared) {
+      const newScore = score + pointsTable[rowsCleared] * level;
       setRows(rows + rowsCleared);
-      setScore(score + pointsTable[rowsCleared] * level);
+      setScore(newScore);
+
+      if (newScore >= highScore) {
+        setHighScore(newScore);
+        setNewHighScore(true);
+      }
 
       if (rows + rowsCleared >= level * LEVEL_INCREASE_COUNT) {
         setLevel(1 + Math.ceil((rows + rowsCleared) / LEVEL_INCREASE_COUNT));
@@ -30,6 +47,7 @@ export const useGameStatus = (
 
   const resetGame = (): void => {
     setScore(0);
+    setNewHighScore(false);
     setRows(0);
     setLevel(1);
   };
@@ -38,5 +56,14 @@ export const useGameStatus = (
     setTetrominos([tetrominos[1], randomTetromino()]);
   };
 
-  return [score, rows, level, tetrominos, resetGame, generateNextTetromino];
+  return [
+    score,
+    highScore,
+    rows,
+    level,
+    newHighScore,
+    tetrominos,
+    resetGame,
+    generateNextTetromino
+  ];
 };

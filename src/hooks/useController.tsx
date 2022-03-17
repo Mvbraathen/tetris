@@ -8,7 +8,8 @@ export const useController = (): [
   moveDown: boolean,
   rotatePressed: boolean,
   handleKeyPressed: (event: { key: string }, state: GameState) => void,
-  handleKeyReleased: (event: { key: string }, state: GameState) => void
+  handleKeyReleased: (event: { key: string }, state: GameState) => void,
+  setMoveComplete: () => void
 ] => {
   const [leftPressState, setLeftPressState] = useState(false);
   const [downPressState, setDownPressState] = useState(false);
@@ -16,6 +17,7 @@ export const useController = (): [
   const [rotatePressState, setRotatePressState] = useState(false);
 
   const handleKeyPressed = (event: { key: string }, state: GameState): void => {
+    console.log('KEY');
     if (state.gameOver || state.startScreen) {
       if (event.key === ' ' && !downPressState) {
         setDownPressState(true);
@@ -72,12 +74,18 @@ export const useController = (): [
     }
   };
 
+  const setMoveComplete = (): void => {
+    setLeftPressState(false);
+    setRightPressState(false);
+  };
+
   return [
     leftPressState,
     rightPressState,
     downPressState,
     rotatePressState,
     handleKeyPressed,
-    handleKeyReleased
+    handleKeyReleased,
+    setMoveComplete
   ];
 };

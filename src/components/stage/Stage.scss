@@ -26,7 +26,6 @@
   color: white;
   text-align: center;
   box-sizing: border-box;
-  // transition: opacity 150ms ease-out;
   border: 0.1rem outset rgba(255, 255, 255, 0.2);
   border-radius: 0.2rem;
 
@@ -63,40 +62,18 @@
     border-color: adjust-color(#29cff5, $lightness: 20%);
   }
 
-  &[data-color='201'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
-  &[data-color='202'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
-  &[data-color='203'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
-  &[data-color='204'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
-  &[data-color='205'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
-  &[data-color='206'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
-  }
+  &[data-color='201'],
+  &[data-color='202'],
+  &[data-color='203'],
+  &[data-color='204'],
+  &[data-color='205'],
+  &[data-color='206'],
   &[data-color='207'] {
-    background: black;
-    border-color: adjust-color(black, $lightness: 20%);
-    opacity: 0.4;
+    background: var(--background-color);
+    border: var(--border);
+    filter: drop-shadow(0 0 8px var(--secondary-color));
+    opacity: 1;
+    z-index: 10;
   }
 
   &[data-color='254'] {

@@ -1,6 +1,8 @@
 :root {
   --background-color: #003459;
   --primary-color: #2acff5;
+  --secondary-color: #21a4c2;
+  --border: 3px solid white;
 }
 
 * {
