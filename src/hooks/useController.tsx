@@ -17,7 +17,6 @@ export const useController = (): [
   const [rotatePressState, setRotatePressState] = useState(false);
 
   const handleKeyPressed = (event: { key: string }, state: GameState): void => {
-    console.log('KEY');
     if (state.gameOver || state.startScreen) {
       if (event.key === ' ' && !downPressState) {
         setDownPressState(true);

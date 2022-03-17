@@ -40,8 +40,8 @@ const initialGameState: GameState = {
 const LEFT = -1;
 const RIGHT = 1;
 const BLOCK_SIZE = 32;
-const SPEED_FACTOR = 450;
-const LEVEL_FACTOR = 125;
+const SPEED_FACTOR = 600;
+const LEVEL_FACTOR = 35;
 
 export default function Tetris() {
   const [state, setState] = useState(initialGameState);
@@ -88,7 +88,7 @@ export default function Tetris() {
   const [playYouWin] = useSound('/assets/sfx/you-win.mp3');
 
   const levelSpeed = (): number => {
-    return SPEED_FACTOR / level + LEVEL_FACTOR;
+    return Math.max(SPEED_FACTOR - level * LEVEL_FACTOR, LEVEL_FACTOR);
   };
 
   useEffect(() => {
