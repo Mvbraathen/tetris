@@ -8,7 +8,7 @@ import { ReactComponent as TetrisVertical } from '../../svg/tetrisVertical.svg';
 import css from './Tetris.module.scss';
 import Display from 'components/display/Display';
 import GameOver from '../gameover/GameOver';
-import StartScreen from '../startscreen/StartScreen';
+import ScoreBoard from '../scoreboard/ScoreBoard';
 import Next from 'components/next/Next';
 import Stage from 'components/stage/Stage';
 import {
@@ -27,13 +27,13 @@ import {
 
 export interface GameState {
   gameOver: boolean;
-  startScreen: boolean;
+  scoreBoard: boolean;
   dropSpeed: number;
 }
 
 const initialGameState: GameState = {
   gameOver: false,
-  startScreen: true,
+  scoreBoard: true,
   dropSpeed: 1100
 };
 
@@ -87,7 +87,7 @@ export default function Tetris() {
 
   useEffect(() => {
     if (downPressState) {
-      if (state.gameOver || state.startScreen) {
+      if (state.gameOver || state.scoreBoard) {
         play();
         return;
       }
@@ -118,7 +118,7 @@ export default function Tetris() {
         setState({
           ...state,
           gameOver: true,
-          startScreen: false
+          scoreBoard: false
         });
         playYouLose();
         return;
@@ -200,7 +200,7 @@ export default function Tetris() {
   };
 
   const drop = (): void => {
-    if (state.gameOver || state.startScreen) {
+    if (state.gameOver || state.scoreBoard) {
       return;
     }
 
@@ -223,7 +223,7 @@ export default function Tetris() {
     setState({
       ...state,
       gameOver: false,
-      startScreen: false
+      scoreBoard: false
     });
     setGamesPlayed(gamesPlayed + 1);
 
@@ -234,7 +234,7 @@ export default function Tetris() {
     setState({
       ...state,
       gameOver: false,
-      startScreen: true
+      scoreBoard: true
     });
     resetGame();
     setStage(createStage());
@@ -246,7 +246,7 @@ export default function Tetris() {
   };
 
   const swipeStart = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
+    if (state.gameOver || state.scoreBoard) {
       return;
     }
 
@@ -260,7 +260,7 @@ export default function Tetris() {
   };
 
   const swipeMove = (position: SwipePosition): void => {
-    if (state.gameOver || state.startScreen) {
+    if (state.gameOver || state.scoreBoard) {
       return;
     }
 
@@ -281,7 +281,7 @@ export default function Tetris() {
   };
 
   const swipeEnd = (event: any): void => {
-    if (state.gameOver || state.startScreen) {
+    if (state.gameOver || state.scoreBoard) {
       return;
     }
 
@@ -351,7 +351,7 @@ export default function Tetris() {
           <section>
             <Stage stage={stage} />
             <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
-            <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
+            <ScoreBoard scoreBoard={state.scoreBoard && gamesPlayed === 0} />
             <Next tetromino={tetrominos[1]} />
             <aside>
               <TetrisVertical className={css.VerticalTetrisLogo} />
@@ -372,7 +372,7 @@ export default function Tetris() {
                     Hjem
                   </button>
                 </div>
-              ) : state.startScreen ? (
+              ) : state.scoreBoard ? (
                 <button className={css.PlayButton} onClick={play} tabIndex={-1}>
                   Spill
                 </button>

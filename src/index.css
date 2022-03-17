@@ -11,7 +11,7 @@
 body {
   margin: 0;
   background: #123;
-  font-family: 'Open Sans';
+  font-family: 'Open Sans', sans-serif;
   font-weight: 700;
   font-size: 62.5%;
   overflow: hidden;
