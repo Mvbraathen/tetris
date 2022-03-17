@@ -27,7 +27,7 @@ const ScorePage = (props: ScorePageProps) => {
         setShowHigh(false);
       }, 5000);
     } else {
-      setShowHigh(true);
+      setShowHigh(false);
     }
   }, [rank]);
 
