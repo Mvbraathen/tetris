@@ -22,7 +22,7 @@ const ScoreBoard = (props: ScoreBoardProps) => {
         <ol className={css.ScoreBoardList}>
           {[...Array(10).keys()].map((i) => (
             <li key={i}>
-              <Display content="This could be you" />
+              <Display content="" />
             </li>
           ))}
         </ol>

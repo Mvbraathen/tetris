@@ -10,6 +10,7 @@
 
 .TetrisHeader {
   width: 30rem;
+  margin: 0 auto;
 }
 
 .PlayButton {
@@ -18,33 +19,40 @@
   justify-self: center;
 }
 
+.container {
+  display: grid;
+  place-content: center;
+}
+
 .ScoreBoardList {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 100%;
-  height: 100%;
   font-size: xx-large;
+  gap: 0.5rem;
   color: white;
 
   li {
     & > div {
       background-color: #29cff5;
+      width: 25rem;
+      height: 1.25rem;
       color: black;
     }
     &:nth-child(1) > * {
       background-color: #ff5f63;
+      height: 3rem;
+      width: 34rem;
     }
     &:nth-child(2) > * {
       background-color: #fed546;
+      height: 2.5rem;
+      width: 31rem;
     }
     &:nth-child(3) > * {
       background-color: #49bca1;
+      height: 2rem;
+      width: 27.5rem;
     }
   }
-}
-
-.container {
-  display: grid;
-  place-content: center;
 }
