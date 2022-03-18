@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
 
-import { randomTetromino, Tetromino } from '../helpers';
+import {
+  fetchHighScores,
+  randomTetromino,
+  saveScore,
+  Tetromino
+} from '../helpers';
+import { Score } from 'models';
 
 const LEVEL_INCREASE_COUNT = 2;
 const pointsTable: number[] = [0, 40, 100, 300, 1200];
@@ -39,10 +45,24 @@ export const useGameStatus = (
   const [tetrominos, setTetrominos] = useState(initialTetrominosList);
 
   useEffect(() => {
+    fetchHighScores();
+  }, []);
+
+  useEffect(() => {
     if (rowsCleared) {
       const newScore = score + pointsTable[rowsCleared] * level;
       setRows(rows + rowsCleared);
       setScore(newScore);
+
+      const storableScore: Score = {
+        duration: 0,
+        level,
+        name: 'Chubby Chub',
+        rows: rows + rowsCleared,
+        score: newScore,
+        tetrominos: 0
+      };
+      saveScore(storableScore);
 
       if (newScore >= highScore) {
         setHighScore(newScore);
