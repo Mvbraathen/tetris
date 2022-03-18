@@ -9,6 +9,16 @@ const initialTetrominosList: Tetromino[] = [
   randomTetromino()
 ];
 
+const initialHighScore = (): number => {
+  const tempHighScore = localStorage.getItem('highScores');
+  if (!tempHighScore) {
+    return 0;
+  }
+
+  const scores = JSON.parse(tempHighScore);
+  return scores?.at(0)?.score ?? 0;
+};
+
 export const useGameStatus = (
   rowsCleared: number
 ): [
@@ -22,7 +32,7 @@ export const useGameStatus = (
   () => void
 ] => {
   const [score, setScore] = useState(0);
-  const [highScore, setHighScore] = useState(0);
+  const [highScore, setHighScore] = useState(initialHighScore());
   const [newHighScore, setNewHighScore] = useState(false);
   const [rows, setRows] = useState(0);
   const [level, setLevel] = useState(1);
