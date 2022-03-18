@@ -1,8 +1,8 @@
 import React from 'react';
-import { render } from 'react-dom';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
 import { getFirestore } from 'firebase/firestore';
+import { render } from 'react-dom';
 
 import './index.css';
 import App from './App';
