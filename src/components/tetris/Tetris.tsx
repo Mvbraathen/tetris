@@ -354,6 +354,11 @@ export default function Tetris() {
           />
         </div>
       </div>
+      <GameOver
+        gameOver={state.gameOver && gamesPlayed > 0}
+        score={score}
+        restart={returnHome}
+      />
       <Swipe
         onSwipeStart={swipeStart}
         onSwipeMove={swipeMove}
@@ -371,7 +376,6 @@ export default function Tetris() {
         >
           <section>
             <Stage stage={stage} />
-            <GameOver gameOver={state.gameOver && gamesPlayed > 0} />
             <StartScreen startScreen={state.startScreen && gamesPlayed === 0} />
             <Next tetromino={tetrominos[1]} />
             <aside>

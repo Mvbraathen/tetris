@@ -1,18 +1,16 @@
 .GameOver {
   display: grid;
   position: absolute;
-  left: 0;
   top: 0;
-  width: 25rem;
+  width: 100%;
   height: 100%;
   background: rgba(0, 0, 0, 0.4);
   color: var(--primary-color);
+  font-family: 'Open Sans', sans-serif;
+  font-weight: 700;
   align-items: center;
   text-align: center;
   font-size: 4rem;
   transition: all 350ms ease-out;
-
-  span {
-    filter: drop-shadow(0 0 16px var(--primary-color));
-  }
+  z-index: 2;
 }
