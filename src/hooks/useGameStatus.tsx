@@ -22,7 +22,12 @@ const initialHighScore = (): number => {
   }
 
   const scores = JSON.parse(tempHighScore);
-  return scores?.at(0)?.score ?? 0;
+  try {
+    return scores[0].score ?? 0;
+  } catch (e) {
+    console.error(e);
+    return 0;
+  }
 };
 
 export const useGameStatus = (
