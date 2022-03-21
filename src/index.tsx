@@ -1,20 +1,23 @@
 import React from 'react';
-import { render } from 'react-dom';
 import { initializeApp } from 'firebase/app';
 import { getAnalytics } from 'firebase/analytics';
+import { getFirestore } from 'firebase/firestore';
+import { render } from 'react-dom';
 
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 
 const firebaseConfig = {
-  apiKey: 'AIzaSyAd8NZ-dEf0hKOi8aVN-8TdsI_k4fV1QKk',
-  authDomain: 'tetris-7b8bd.firebaseapp.com',
-  projectId: 'tetris-7b8bd',
-  storageBucket: 'tetris-7b8bd.appspot.com',
-  messagingSenderId: '579789069904',
-  appId: '1:579789069904:web:64fe71a1a74baf7471bb55',
-  measurementId: 'G-5CR5XFGP8K'
+  apiKey: 'AIzaSyA0gvBuEPaccE2sW5ybIANcmPomKbDkkmA',
+  authDomain: 'compis-tetris.firebaseapp.com',
+  databaseURL:
+    'https://compis-tetris-default-rtdb.europe-west1.firebasedatabase.app',
+  projectId: 'compis-tetris',
+  storageBucket: 'compis-tetris.appspot.com',
+  messagingSenderId: '920428522809',
+  appId: '1:920428522809:web:6d7a26faa8208657a1cce8',
+  measurementId: 'G-XJJ3HG47TQ'
 };
 
 render(
@@ -24,7 +27,9 @@ render(
   document.getElementById('root')
 );
 
-const app = initializeApp(firebaseConfig);
+export const app = initializeApp(firebaseConfig);
+export const firestore = getFirestore(app);
+
 getAnalytics(app);
 
 // If you want to start measuring performance in your app, pass a function

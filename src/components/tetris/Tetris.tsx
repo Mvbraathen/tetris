@@ -175,18 +175,6 @@ export default function Tetris() {
     }
   }, dropSpeed);
 
-  /*  useInterval(() => {
-    if (!state.gameOver) {
-      if (leftPressState) {
-        movePlayer(LEFT);
-      }
-      if (rightPressState) {
-        movePlayer(RIGHT);
-      }
-    }
-  }, 130);
-*/
-
   const movePlayer = (dir: number): void => {
     if (state.gameOver) {
       return;
