@@ -47,8 +47,12 @@
   }
 
   .PlayButton {
-    background-color: #49bca1;
-    margin-bottom: -1rem;
+    position: absolute;
+    background-color: #fed546;
+    width: 339px;
+    right: 3.9rem;
+    margin-bottom: 3.5rem;
+    z-index: 1;
   }
 
   .PlayAgainButton {

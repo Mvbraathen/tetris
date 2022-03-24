@@ -13,24 +13,16 @@
   margin: 0 auto;
 }
 
-.PlayButton {
-  background-color: #fed546;
-  width: 339px !important;
-  justify-self: center;
-}
-
 .container {
   display: grid;
-  place-content: center;
 }
 
 .ScoreBoardList {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  display: grid;
+  place-items: center;
   font-size: xx-large;
-  gap: 0.5rem;
   color: white;
+  margin-top: 0.5rem;
 
   li {
     & > div {

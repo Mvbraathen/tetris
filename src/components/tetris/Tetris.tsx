@@ -362,7 +362,7 @@ export default function Tetris() {
                     onClick={play}
                     tabIndex={-1}
                   >
-                    Spill igjen
+                    Spill
                   </button>
                   <button
                     className={css.HomeButton}
@@ -374,7 +374,7 @@ export default function Tetris() {
                 </div>
               ) : state.scoreBoard ? (
                 <button className={css.PlayButton} onClick={play} tabIndex={-1}>
-                  Spill
+                  SPILL OG VINN PREMIE
                 </button>
               ) : null}
             </aside>

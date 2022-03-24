@@ -26,7 +26,6 @@ const ScoreBoard = (props: ScoreBoardProps) => {
             </li>
           ))}
         </ol>
-        <button className={css.PlayButton}>SPILL OG VINN PREMIE</button>
       </div>
     </div>
   );
